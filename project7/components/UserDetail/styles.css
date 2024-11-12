@@ -1,0 +1,9 @@
+/* occupation styling */
+.userDesc .occupation{
+    color:rgb(65, 65, 147); 
+}
+
+/* location styling */
+.userDesc .location{
+    color:rgb(118, 118, 118); 
+}

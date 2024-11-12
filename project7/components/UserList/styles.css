@@ -1,0 +1,33 @@
+/*selective styling of links*/
+.userListItem a{
+    text-decoration: none;
+    color: blue;
+}
+.userListItem a:visited{
+    text-decoration: none;
+    color: blue;
+}
+.userListItem a:hover{
+    color: rgb(0, 187, 255);
+}
+
+/*button styling*/
+.dot{
+    background-color: rgb(115, 220, 115);
+    border-radius: 1rem;
+    display: inline;
+    margin: 3px;
+    padding: 3px;
+    min-width: 30px;
+    text-align: center;
+}
+
+.red{
+    background-color: rgb(243, 109, 109);
+}
+
+a.linkButton, a.linkButton:visited, a.linkButton:hover{
+    color: black;
+    text-decoration: none;
+    text-decoration-line: none;
+}

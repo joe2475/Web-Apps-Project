@@ -1,0 +1,39 @@
+/*comment title styling*/
+.commentTitle{
+    color: gray;
+}
+
+/*comment author link styling*/
+.commentTitle a{
+    text-decoration: none;
+    color: blue;
+}
+.commentTitle a:visited{
+    text-decoration: none;
+    color: blue;
+}
+.commentTitle a:hover{
+    color: rgb(0, 187, 255);
+}
+
+/*comment body styling*/
+.commentCard{
+    margin: 3px;
+}
+
+/*photo author link styling*/
+.photo a{
+    color: blue;
+}
+.photo a:visited{
+    color: blue;
+}
+.photo a:hover{
+    color: rgb(0, 187, 255);
+}
+
+/*photo body styling*/
+.photoImage{
+    max-width: 100%;
+    max-height: 75%;
+}
