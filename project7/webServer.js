@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * This builds on the webServer of previous projects in that it exports the
  * current directory via webserver listing on a hard code (see portno below)

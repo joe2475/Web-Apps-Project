@@ -1,3 +1,5 @@
+"use strict";
+
 import React, {useState} from "react";
 import { Button, Divider, Typography } from "@mui/material";
 

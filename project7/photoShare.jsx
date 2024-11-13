@@ -1,3 +1,5 @@
+"use strict";
+
 import React, {useState} from "react";
 import ReactDOM from "react-dom/client";
 import { Grid, Paper, Button } from "@mui/material";
