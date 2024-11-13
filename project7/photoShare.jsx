@@ -12,6 +12,7 @@ import UserList from "./components/UserList";
 import UserPhotos from "./components/UserPhotos";
 import UserComments from "./components/Comments";
 import {Context} from "./components/Context";
+import PhotoUpload from "./components/PhotoUpload";
 
 //call on user detail component
 function UserDetailRoute() {
@@ -58,6 +59,7 @@ function PhotoShare() {
                 <Route path="/comments/:userId" element={<CommentsRoute/>} />
                 <Route path="/photos/:userId/*" element={<UserPhotosRoute  />} />
                 <Route path="/users" element={(<UserList/>)} />
+                <Route path="/photo/upload" element={<PhotoUpload/>}></Route>
                 <Route
                   path="/"
                   element={<Button href="#users">Navigate to Users</Button>}

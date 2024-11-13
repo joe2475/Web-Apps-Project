@@ -1,8 +1,8 @@
 "use strict";
 
 import React, {useState, useContext} from "react";
-import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel } from "@mui/material";
-import { Route, Routes, useParams } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel, Button } from "@mui/material";
+import { Route, Routes, useParams, Link } from "react-router-dom";
 
 import "./styles.css";
 import axios from "axios";
@@ -74,6 +74,7 @@ function getText(){
 }
 
 
+
 // topbar component
 // if props provided, props are expected to be a flag/setFlag pair object
 function TopBar() {
@@ -90,6 +91,7 @@ function TopBar() {
         </FormGroup>  
         <Typography variant="h5" color="inherit">
           {getText()}
+          <Button component={Link} to='/photo/upload' variant="contained" color="primary">Add Photo</Button>
         </Typography>
       </Toolbar>
     </AppBar>
@@ -97,3 +99,4 @@ function TopBar() {
 }
 
 export default TopBar;
+//<Link to='/photo/upload'>Upload Photo</Link>
