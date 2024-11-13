@@ -9,13 +9,12 @@ import {
 } from "@mui/material";
 import "./styles.css";
 import axios from "axios";
+import useStateContext from "../Context";
 
 // user comment list component
-function UserComments({flags, userId}) {
-  // case: no features - warn that there are no features
-  if (flags === undefined || flags.flag === false){
-    return(<h2>Enable experimental features to access User Comments page.</h2>);
-  }
+function UserComments({userId}) {
+
+  const {useAdvanced} = useStateContext(); // get flags
 
   // user model
   const [model, setModel] = useState({});
@@ -34,7 +33,8 @@ function UserComments({flags, userId}) {
   // displays a list of comment cards from fetched data
   return (
     <div>
-      {(model.comments && model.comments.length)? model.comments.map( (item, key) => {
+      {/*use advanced features*/}
+      {useAdvanced? <>{(model.comments && model.comments.length)? model.comments.map( (item, key) => {
         return (
           <div key={key}>
             <Card sx={{ m: 2 }}>
@@ -56,7 +56,12 @@ function UserComments({flags, userId}) {
             </Card>
           </div>
         );
-      }) : <h2>No Comments.</h2>}
+      }) : <h2>No Comments.</h2>}</> :
+        <>
+          {/*do not use advanced features*/}
+          <h2>Enable experimental features to access User Comments page.</h2>
+        </>
+      }
     </div>
   );
 }

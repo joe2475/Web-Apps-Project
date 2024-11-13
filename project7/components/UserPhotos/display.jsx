@@ -36,6 +36,7 @@ export function CommentUnit({comment}){
 
 // component for photo display, with photo, metadata, and comments
 export function PhotoUnit({photo, user}){
+
   // return loading if no contents
   if(photo === undefined || !photo._id){
     return(<h3>Loading Photo...</h3>);

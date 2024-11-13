@@ -10,6 +10,7 @@ import "./styles.css";
 import axios from "axios";
 import {PhotoUnit} from "./display";
 import ExpNav from "./experimentalDisplay";
+import useStateContext from "../Context";
 
 // generate experimental image view
 function CallExperimental({user, photos}){
@@ -43,10 +44,12 @@ function CallExperimental({user, photos}){
 
 // user photos component
 // accomidates both ordinary and experimental features
-function UserPhotos({userId, flags}) {
+function UserPhotos({userId}) {
   const [photos, setPhotos] = useState(""); // photos of user
   const [user, setuser] = useState(""); // user owner of photos
   const location = useLocation();
+
+  const {useAdvanced} = useStateContext(); // get flags
 
   // regenerate when location changes
   useEffect(() => {}, [location]);
@@ -87,30 +90,23 @@ function UserPhotos({userId, flags}) {
     );
   }
 
-  // case experimental conditions are true
-  //
-  if (flags && flags.flag === true){
-    return(
-      <div className="photoGroup">
+  // case experimental conditions are true, and normal photo display
+  return(
+    <div className="photoGroup">
+      {useAdvanced?
         <Routes>
           <Route path="/:photoId" element={<CallExperimental user={user} photos={photos} />} />
           <Route path="/*" element={<Navigate to={getFirstPhoto()}/>}  />
-        </Routes>
-      </div>
-    );
-  }
-
-  // default conditions (normal photo display)
-  return (
-    <div className="photoGroup">
-      {photos.map((photo) => {
-        return( 
-          <div key={photo._id}>
-            {<PhotoUnit photo={photo} user={user} />}
-            <br/><Divider/><br/>
-          </div>
-        );
-      })}
+        </Routes>:
+      <>{photos.map((photo) => {
+              return( 
+                <div key={photo._id}>
+                  {<PhotoUnit photo={photo} user={user} />}
+                  <br/><Divider/><br/>
+                </div>
+              );
+            })}</>
+          }
     </div>
   );
 }
