@@ -18,7 +18,10 @@ function getUsername(){
   useEffect(()=>{
     axios.get("/user/"+userId).then(
       function(success){setuser(success.data); },
-      (failure) => {console.log(failure); }
+      (failure) => {
+        console.log(failure); 
+        setuser("");
+      }
     );
   },[]);
 
@@ -37,7 +40,10 @@ function getVersion(){
   useEffect(()=>{
     axios.get("/test/info").then(
       function(success){setVersion(success.data); },
-      (failure) => {console.log(failure);  }
+      (failure) => {
+        console.log(failure);  
+        setVersion("X");
+      }
     );
   },[]);
 
@@ -81,7 +87,9 @@ function getText(){
 // topbar component
 // if props provided, props are expected to be a flag/setFlag pair object
 function TopBar() {
-  const {useAdvanced, setUseAdvanced} = useStateContext();
+  const {useAdvanced, setUseAdvanced, username} = useStateContext();
+
+  useEffect(()=>{},[username]);
 
   return (
     <AppBar className="topbar-appBar" position="absolute">

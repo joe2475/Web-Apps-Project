@@ -10,29 +10,38 @@ import {
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
+import Login from "../Login";
+
+axios.defaults.withCredentials = true;
 
 // user list component
 function UserList() {
   // user model
   const [model, setModel] = useState({});
   
-  const {useAdvanced} = useStateContext(); // get flags
+  const {useAdvanced, username} = useStateContext(); // get flags
 
   // fetch data; when flag enabled, use a different api
   useEffect(()=>{
     if(useAdvanced){
       axios.get("/user-exp/list").then(
         function(success){setModel(success.data); },
-        (failure) => {console.log(failure);  }
+        (failure) => {
+          console.log(failure);  
+          setModel({});
+        }
       );
     }
     else{
       axios.get("/user/list").then(
         function(success){setModel(success.data); },
-        (failure) => {console.log(failure);  }
+        (failure) => {
+          console.log(failure);  
+          setModel({});
+        }
       );
     }
-  },[useAdvanced]);
+  },[useAdvanced, username]);
 
   // content display
   return (
@@ -55,6 +64,7 @@ function UserList() {
           );
         }) : "No Data."}
       </List>
+      <Login />
     </div>
   );
 }

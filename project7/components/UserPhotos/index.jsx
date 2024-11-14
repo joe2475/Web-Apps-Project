@@ -49,7 +49,7 @@ function UserPhotos({userId}) {
   const [user, setuser] = useState(""); // user owner of photos
   const location = useLocation();
 
-  const {useAdvanced} = useStateContext(); // get flags
+  const {useAdvanced, username} = useStateContext(); // get flags
 
   // regenerate when location changes
   useEffect(() => {}, [location]);
@@ -63,8 +63,12 @@ function UserPhotos({userId}) {
       setPhotos(result[0].data);
       setuser(result[1].data);
       //console.log(photos, "\n", user)
-    });
-  },[userId]);
+    },
+  (err) => {
+    setPhotos("");
+    setuser("");
+  });
+  },[userId, username]);
 
   //photo navigation for redirection
   function getFirstPhoto(){

@@ -14,7 +14,7 @@ import useStateContext from "../Context";
 // user comment list component
 function UserComments({userId}) {
 
-  const {useAdvanced} = useStateContext(); // get flags
+  const {useAdvanced, username} = useStateContext(); // get flags
 
   // user model
   const [model, setModel] = useState({});
@@ -27,9 +27,10 @@ function UserComments({userId}) {
       },
       (failure) => {
         console.log(failure);
+        setModel({});
       }
     );
-  },[userId]);
+  },[userId, username]);
 
   // content display
   // displays a list of comment cards from fetched data

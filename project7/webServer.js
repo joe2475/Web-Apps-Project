@@ -36,30 +36,47 @@
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
 
-// const async = require("async");
-
 const express = require("express");
 const asyncHandler = require("express-async-handler");
 const app = express();
+
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const multer = require("multer");
 
 // Load the Mongoose schema for User, Photo, and SchemaInfo
 const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
 
-// XXX - Your submission should work without this line. Comment out or delete
-// this line for tests and before submission!
-//const models = require("./modelData/photoApp.js").models;
-
+// connect to mongo
 mongoose.set("strictQuery", false);
 mongoose.connect("mongodb://127.0.0.1/project6", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-// We have the express static module
-// (http://expressjs.com/en/starter/static-files.html) do all the work for us.
+// We have the express static module (http://expressjs.com/en/starter/static-files.html) do all the work for us.
 app.use(express.static(__dirname));
+
+// set up sessions
+app.use(session({
+  secret: "secret",
+  key: "key",
+  resave: true,   // save session back to store when edited
+  saveUninitialized: true,  // if not fully initialized, then don't save
+}));
+
+// 'is logged in' middleware
+function isLoggedIn(request, response, next){
+  if (request.session.user) next();  // if user logged in, go to next middleware
+  else{
+    // respond with not logged in error
+    console.log("Information request: no user found")
+    return response.status(403).send("Unauthorized access: Not logged in.");
+  } 
+}
+
 
 app.get("/", function (request, response) {
   response.send("Simple web server of files from " + __dirname);
@@ -140,7 +157,7 @@ try {
 /**
  * URL /user/list - Returns all the User objects.
  */
-app.get("/user/list", async function (request, response) {
+app.get("/user/list", isLoggedIn, async function (request, response) {
   //response.status(200).send(models.userListModel());
   try{
     const info = await User.find({},"_id first_name last_name");
@@ -160,7 +177,7 @@ app.get("/user/list", async function (request, response) {
 /**
  * URL /user/:id - Returns the information for User (id).
  */
-app.get("/user/:id", async function (request, response) {
+app.get("/user/:id", isLoggedIn, async function (request, response) {
   try{
     const id = request.params.id;
     if (id.length !== 24){
@@ -192,7 +209,7 @@ app.get("/user/:id", async function (request, response) {
 /**
  * URL /photosOfUser/:id - Returns the Photos for User (id).
  */
-app.get("/photosOfUser/:id", asyncHandler(async function (request, response) {
+app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, response) {
 
   // validate ID
   const id = request.params.id;
@@ -268,7 +285,7 @@ app.get("/photosOfUser/:id", asyncHandler(async function (request, response) {
 /**
  * URL /user-exp/list - Returns the Expanded Information for User List.
  */
-app.get("/user-exp/list", asyncHandler(async function (request, response) {
+app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, response) {
 
   //fetch info
   Promise.all([
@@ -331,7 +348,7 @@ app.get("/user-exp/list", asyncHandler(async function (request, response) {
 /**
  * URL /user-exp/:id - Returns the Expanded Information for User of id.
  */
-app.get("/user-exp/:id", asyncHandler(async function (request, response) {
+app.get("/user-exp/:id", isLoggedIn, asyncHandler(async function (request, response) {
 
   // validate id
   const id = request.params.id;
@@ -388,6 +405,80 @@ app.get("/user-exp/:id", asyncHandler(async function (request, response) {
   });
   return "Unknown Error";
 }));
+
+
+/**
+ * URL /login
+ */
+app.post("/admin/login", express.urlencoded({ extended: false }),
+  async function (request, response) {
+  try{
+    
+
+
+    // attempt login -----------
+    const username = request.body.login_name; // fetch login name
+    console.log("Login request: username '" + username + "'");
+
+    // record login
+    //FIXME add to some record?
+
+    if (false){      
+      return response.status(400).json(err); // Send the error as JSON
+    }
+
+    request.session.regenerate(function (err){
+
+      if (err) next(err);
+
+    // create session
+    request.session.user = "user";
+
+    request.session.save(function (err){
+      if(err) return next(err);
+      response.redirect('/');
+    })
+  })
+  }
+  catch(err){
+    console.error("Bad param " + request.params, err);
+    return response.status(400).json(err); // Send the error as JSON
+  }
+});
+
+/**
+ * URL /logout
+ */
+app.post("/admin/logout", async function (request, response) {
+  try{
+    //FIXME: require session before allowing
+
+    // remove session
+    request.session.user = null;
+
+    // save change to session
+    request.session.save(function (err){
+      if (err) next(err);
+
+      request.session.regenerate(function (err){
+        if (err) next(err);
+        response.redirect('/');
+      });
+    });
+
+    console.log("logout request placed");
+
+    // collect session user
+    //response.send(user);
+  }
+  catch(err){
+    console.error("Bad param " + request.params, err);
+    return response.status(400).json(err); // Send the error as JSON
+  }
+});
+
+// request.session.name = "SESSION_TEST";
+// request.send("test 1");
 
 const server = app.listen(3000, function () {
   const port = server.address().port;

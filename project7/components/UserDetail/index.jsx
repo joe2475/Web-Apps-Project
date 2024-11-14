@@ -5,19 +5,24 @@ import { Button, Divider, Typography } from "@mui/material";
 
 import "./styles.css";
 import axios from "axios";
+import useStateContext from "../Context";
 
 // user details component
 function UserDetail({userId}) {
   // user data constants
   const [user, setuser] = useState("");
+  const {username} = useStateContext();
   
   // fetch data
   useEffect(()=>{
     axios.get("/user/"+userId).then(
       function(success){setuser(success.data); },
-      (failure) => {console.log(failure); }
+      (failure) => {
+        console.log(failure); 
+        setuser("");
+      }
     );
-  },[userId]);
+  },[userId, username]);
   
   // if user isn't loaded, do not display content
   return (
