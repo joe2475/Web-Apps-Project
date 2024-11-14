@@ -1,6 +1,6 @@
 "use strict";
 
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Card,
   CardMedia,
@@ -20,14 +20,16 @@ function UserComments({userId}) {
   const [model, setModel] = useState({});
 
   // fetch data
-  axios.get("/user-exp/"+userId).then(
-    function(success){setModel(success.data); 
-      console.log(success.data);
-    },
-    (failure) => {
-      console.log(failure);
-    }
-  );
+  useEffect(()=>{
+    axios.get("/user-exp/"+userId).then(
+      function(success){setModel(success.data); 
+        console.log(success.data);
+      },
+      (failure) => {
+        console.log(failure);
+      }
+    );
+  },[userId]);
 
   // content display
   // displays a list of comment cards from fetched data

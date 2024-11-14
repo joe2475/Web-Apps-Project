@@ -1,6 +1,6 @@
 "use strict";
 
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Button, Divider, Typography } from "@mui/material";
 
 import "./styles.css";
@@ -12,10 +12,12 @@ function UserDetail({userId}) {
   const [user, setuser] = useState("");
   
   // fetch data
-  axios.get("/user/"+userId).then(
-    function(success){setuser(success.data); },
-    (failure) => {console.log(failure); }
-  );
+  useEffect(()=>{
+    axios.get("/user/"+userId).then(
+      function(success){setuser(success.data); },
+      (failure) => {console.log(failure); }
+    );
+  },[userId]);
   
   // if user isn't loaded, do not display content
   return (

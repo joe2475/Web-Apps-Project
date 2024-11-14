@@ -1,6 +1,6 @@
 "use strict";
 
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Divider,
   List,
@@ -19,18 +19,20 @@ function UserList() {
   const {useAdvanced} = useStateContext(); // get flags
 
   // fetch data; when flag enabled, use a different api
-  if(useAdvanced){
-    axios.get("/user-exp/list").then(
-      function(success){setModel(success.data); },
-      (failure) => {console.log(failure);  }
-    );
-  }
-  else{
-    axios.get("/user/list").then(
-      function(success){setModel(success.data); },
-      (failure) => {console.log(failure);  }
-    );
-  }
+  useEffect(()=>{
+    if(useAdvanced){
+      axios.get("/user-exp/list").then(
+        function(success){setModel(success.data); },
+        (failure) => {console.log(failure);  }
+      );
+    }
+    else{
+      axios.get("/user/list").then(
+        function(success){setModel(success.data); },
+        (failure) => {console.log(failure);  }
+      );
+    }
+  },[useAdvanced]);
 
   // content display
   return (

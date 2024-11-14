@@ -1,6 +1,6 @@
 "use strict";
 
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel } from "@mui/material";
 import { Route, Routes, useParams } from "react-router-dom";
 
@@ -15,10 +15,12 @@ function getUsername(){
   const [user, setuser] = useState("");
 
   // fetch data
-  axios.get("/user/"+userId).then(
-    function(success){setuser(success.data); },
-    (failure) => {console.log(failure); }
-  );
+  useEffect(()=>{
+    axios.get("/user/"+userId).then(
+      function(success){setuser(success.data); },
+      (failure) => {console.log(failure); }
+    );
+  },[]);
 
   // represent result
   if (user === "") return "";
@@ -32,10 +34,12 @@ function getVersion(){
   const [version, setVersion] = useState("");
 
   // fetch data
-  axios.get("/test/info").then(
-    function(success){setVersion(success.data); },
-    (failure) => {console.log(failure);  }
-  );
+  useEffect(()=>{
+    axios.get("/test/info").then(
+      function(success){setVersion(success.data); },
+      (failure) => {console.log(failure);  }
+    );
+  },[]);
 
   // represent result
   if (version === "") return "[Loading]";

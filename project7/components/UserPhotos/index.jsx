@@ -55,14 +55,16 @@ function UserPhotos({userId}) {
   useEffect(() => {}, [location]);
 
   // fetch data
-  Promise.all([
-    axios.get("/photosOfUser/"+userId),
-    axios.get("/user/"+userId)
-  ]).then((result) => {
-    setPhotos(result[0].data);
-    setuser(result[1].data);
-    //console.log(photos, "\n", user)
-  });
+  useEffect(()=>{
+    Promise.all([
+      axios.get("/photosOfUser/"+userId),
+      axios.get("/user/"+userId)
+    ]).then((result) => {
+      setPhotos(result[0].data);
+      setuser(result[1].data);
+      //console.log(photos, "\n", user)
+    });
+  },[userId]);
 
   //photo navigation for redirection
   function getFirstPhoto(){
