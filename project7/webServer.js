@@ -146,7 +146,22 @@ try {
   return response.end(JSON.stringify(obj));
 } catch (err) {
   return response.status(500).send(JSON.stringify(err));
-}
+}} else if (param === "users") {
+
+  try{
+
+    const info = await User.find({});
+    if (info.length === 0) {
+          // No SchemaInfo found - return 500 error
+          return response.status(500).send("Missing SchemaInfo");
+    }
+    //console.log("SchemaInfo", info[0]);
+    return response.json(info); // Use `json()` to send JSON responses
+  } catch(err){
+    // Handle any errors that occurred during the query
+    console.error("Error in /test/users:", err);
+    return response.status(500).json(err); // Send the error as JSON
+  }
   } else {
     // If we know understand the parameter we return a (Bad Parameter) (400)
     // status.
