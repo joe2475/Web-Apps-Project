@@ -67,6 +67,9 @@ app.use(session({
   saveUninitialized: true,  // if not fully initialized, then don't save
 }));
 
+// use body parser
+app.use(bodyParser.json());
+
 // 'is logged in' middleware
 function isLoggedIn(request, response, next){
   if (request.session.user) next();  // if user logged in, go to next middleware
@@ -428,32 +431,31 @@ app.get("/user-exp/:id", isLoggedIn, asyncHandler(async function (request, respo
 app.post("/admin/login", express.urlencoded({ extended: false }),
   async function (request, response) {
   try{
-    
-
-
+   
     // attempt login -----------
     const username = request.body.login_name; // fetch login name
     console.log("Login request: username '" + username + "'");
 
-    // record login
-    //FIXME add to some record?
-
-    if (false){      
+    //validate login
+    const user_info = await User.find({login_name: username}, "_id first_name last_name login_name");
+    if (user_info.length == 0){
       return response.status(400).json(err); // Send the error as JSON
     }
 
+    // record login
     request.session.regenerate(function (err){
-
       if (err) next(err);
 
-    // create session
-    request.session.user = "user";
+      // create session
+      request.session.user = username;
 
-    request.session.save(function (err){
-      if(err) return next(err);
-      response.redirect('/');
+      request.session.save(function (err){
+        if(err) return next(err);
+        response.json(user_info[0]); // return json
+        console.log("Login successful");
+      })
     })
-  })
+
   }
   catch(err){
     console.error("Bad param " + request.params, err);

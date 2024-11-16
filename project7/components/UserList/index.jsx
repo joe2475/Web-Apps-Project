@@ -10,7 +10,6 @@ import {
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
-import Login from "../Login";
 
 axios.defaults.withCredentials = true;
 
@@ -64,7 +63,6 @@ function UserList() {
           );
         }) : "No Data."}
       </List>
-      <Login />
     </div>
   );
 }
