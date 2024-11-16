@@ -10,6 +10,9 @@ function PhotoUpload()
     function handleSubmit(event)
     {
         event.preventDefault();
+        if (photo != undefined)
+        {
+        console.log(photo);
         const url = '/photos/new'; 
         const data = new FormData();
         data.append('file',photo); 
@@ -24,6 +27,11 @@ function PhotoUpload()
         axios.post(url, data, config).then((response) => {
             console.log(response.data);
         })
+    }
+    else //Need to add logic for sending empty file to return a 400 respsone. Don't know why we can't just handle this on the frontend but whatever
+    {
+        console.log("No File Loaded");
+    }
     }
    // console.log("Test");
     return(

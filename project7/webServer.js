@@ -35,6 +35,7 @@
 var multer  = require('multer');
 var bodyParser = require('body-parser');
 const mongoose = require("mongoose");
+const fs = require("fs");
 mongoose.Promise = require("bluebird");
 const processFormBody = multer({storage: multer.memoryStorage()}).single('file');
 // const async = require("async");
@@ -335,7 +336,17 @@ app.get("/user-exp/list", asyncHandler(async function (request, response) {
 
 app.post("/photos/new", asyncHandler(async function (request, response) {
   processFormBody(request, response, function(err) {
+    if (request.file.originalname === undefined)
+    {
+      return response.status(400).send("No File Uploaded");
+    }
     console.log(request.file)
+    const timestamp = new Date().valueOf();
+    let tempFileName = request.file.originalname
+    const filename = 'U' +  String(timestamp) + tempFileName.replaceAll(" ","");
+    console.log(filename); 
+    fs.writeFile("./images/" + filename, request.file.buffer, function(err) {
+    })
   })
   response.send("Done");
 }))
