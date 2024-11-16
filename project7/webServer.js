@@ -333,22 +333,26 @@ app.get("/user-exp/list", asyncHandler(async function (request, response) {
   });
   return "Unknown Error";
 }));
-
+//Upload new photos
 app.post("/photos/new", asyncHandler(async function (request, response) {
   processFormBody(request, response, function(err) {
     if (request.file.originalname === undefined)
     {
       return response.status(400).send("No File Uploaded");
     }
-    console.log(request.file)
+    //console.log(request.file)
+    //console.log(request.body.userId);
     const timestamp = new Date().valueOf();
     let tempFileName = request.file.originalname
     const filename = 'U' +  String(timestamp) + tempFileName.replaceAll(" ","");
-    console.log(filename); 
+    const photoObj = {file_name: filename, user_id:request.body.userId}; 
+    console.log(JSON.stringify(photoObj));
+    //console.log(filename); 
     fs.writeFile("./images/" + filename, request.file.buffer, function(err) {
+      Photo.insertMany(photoObj);
     })
   })
-  response.send("Done");
+  response.send("Photo Successfully Uploaded");
 }))
 
 /**
