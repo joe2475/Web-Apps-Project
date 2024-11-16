@@ -32,10 +32,11 @@
  *                      Each photo should have all the Comments on the Photo
  *                      (JSON format).
  */
-
+var multer  = require('multer');
+var bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 mongoose.Promise = require("bluebird");
-
+const processFormBody = multer({storage: multer.memoryStorage()}).single('file');
 // const async = require("async");
 
 const express = require("express");
@@ -60,6 +61,10 @@ mongoose.connect("mongodb://127.0.0.1/project6", {
 // We have the express static module
 // (http://expressjs.com/en/starter/static-files.html) do all the work for us.
 app.use(express.static(__dirname));
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 app.get("/", function (request, response) {
   response.send("Simple web server of files from " + __dirname);
@@ -327,6 +332,13 @@ app.get("/user-exp/list", asyncHandler(async function (request, response) {
   });
   return "Unknown Error";
 }));
+
+app.post("/photos/new", asyncHandler(async function (request, response) {
+  processFormBody(request, response, function(err) {
+    console.log(request.file)
+  })
+  response.send("Done");
+}))
 
 /**
  * URL /user-exp/:id - Returns the Expanded Information for User of id.
