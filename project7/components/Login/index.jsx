@@ -1,6 +1,7 @@
-import React, {useState, useContext} from "react";
-import { Button, TextField, AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel } from "@mui/material";
-import { Route, Routes, useParams } from "react-router-dom";
+"use strict";
+
+import React, {useState} from "react";
+import { Button, TextField, Typography} from "@mui/material";
 
 import axios from "axios";
 import useStateContext from "../Context";
@@ -8,21 +9,31 @@ import useStateContext from "../Context";
 export function Logout(){
     const {username, setUsername, setFirstname, setLastname, setUser_id} = useStateContext(); // get flags
     // logout post
-    axios.post("/admin/logout").then(
-        function(success){
-            console.log("posted logout"); 
-            setUsername(undefined);
-            setFirstname(undefined);
-            setLastname(undefined);
-            setUser_id(undefined);
-        },
-        (failure) => {console.log(failure);  }
+    function logout_request(){
+        axios.post("/admin/logout").then(
+            function(success){
+                console.log("posted logout"); 
+                setUsername(undefined);
+                setFirstname(undefined);
+                setLastname(undefined);
+                setUser_id(undefined);
+            },
+            (failure) => {console.log(failure);  }
         );
-}
+    };
+
+    return(
+        <>
+            {username? <Button variant="contained" color="error" onClick={() => {logout_request()}} sx={{ m: 2 }}>
+                Logout
+            </Button>: ""}
+        </>
+    );    
+};
 
 function Login(){
     const [localUsername, setLocalUsername] = useState("");
-    const {username, setUsername, setFirstname, setLastname, setUser_id} = useStateContext(); // get flags
+    const {setUsername, setFirstname, setLastname, setUser_id} = useStateContext(); // get flags
 
     // login post
     function login_request(){
@@ -41,25 +52,12 @@ function Login(){
             );
     }
 
-    // logout post
-    function logout_request(){
-        axios.post("/admin/logout").then(
-            function(success){
-                console.log("posted logout"); 
-                setUsername(undefined);
-                setFirstname(undefined);
-                setLastname(undefined);
-                setUser_id(undefined);
-            },
-            (failure) => {console.log(failure);  }
-            );
-    }
-
     return(
         <>
-            <TextField required id="outlined-basic" label="Username" variant="outlined" className="m-3"
+            <Typography variant="h4" className="name">Login to Continue</Typography>
+            <TextField required id="outlined-basic" label="Username" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalUsername(event.target.value)}} />
-            <Button variant="contained" onClick={() => {login_request();}} className="m-3">
+            <Button variant="contained" onClick={() => {login_request();}} sx={{ m: 2 }}>
                 login
             </Button>
         </>

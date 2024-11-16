@@ -1,12 +1,13 @@
 "use strict";
 
-import React, {useState, useContext, useEffect} from "react";
-import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel } from "@mui/material";
+import React, {useState, useEffect} from "react";
+import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel} from "@mui/material";
 import { Route, Routes, useParams } from "react-router-dom";
 
 import "./styles.css";
 import axios from "axios";
-import useStateContext from ".././Context";
+import useStateContext from "../Context";
+import {Logout} from "../Login";
 
 // function for fetching username for display
 function getUsername(){
@@ -83,19 +84,22 @@ function getText(){
   );
 }
 
-
 // topbar component
 // if props provided, props are expected to be a flag/setFlag pair object
 function TopBar() {
-  const {useAdvanced, setUseAdvanced, username} = useStateContext();
+  const {useAdvanced, setUseAdvanced, username, firstname} = useStateContext();
 
   useEffect(()=>{},[username]);
+
+//    <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
+//      Jordan Frimpter
+//    </Typography>
 
   return (
     <AppBar className="topbar-appBar" position="absolute">
       <Toolbar>
         <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
-          Jordan Frimpter
+          {firstname? firstname: "Please Log In"}
         </Typography>
         <FormGroup>
           <FormControlLabel control={<Switch checked={useAdvanced} onChange={(event)=>{setUseAdvanced(event.target.checked);}} color="secondary"/>} label="Enable Advanced Features" />
@@ -103,6 +107,7 @@ function TopBar() {
         <Typography variant="h5" color="inherit">
           {getText()}
         </Typography>
+        {username? <Logout /> : ""}
       </Toolbar>
     </AppBar>
   );
