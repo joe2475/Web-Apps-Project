@@ -84,6 +84,8 @@ function getText(){
   );
 }
 
+
+
 // topbar component
 // if props provided, props are expected to be a flag/setFlag pair object
 function TopBar() {
@@ -106,6 +108,7 @@ function TopBar() {
         </FormGroup>  
         <Typography variant="h5" color="inherit">
           {getText()}
+          <Button component={Link} to='/photo/upload' variant="contained" color="primary">Add Photo</Button>
         </Typography>
         {username? <Logout /> : ""}
       </Toolbar>
@@ -114,3 +117,4 @@ function TopBar() {
 }
 
 export default TopBar;
+//<Link to='/photo/upload'>Upload Photo</Link>

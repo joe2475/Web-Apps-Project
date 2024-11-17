@@ -32,8 +32,12 @@
  *                      Each photo should have all the Comments on the Photo
  *                      (JSON format).
  */
+var multer  = require('multer');
+const processFormBody = multer({storage: multer.memoryStorage()}).single('file');
 
+var bodyParser = require('body-parser');
 const mongoose = require("mongoose");
+const fs = require("fs");
 mongoose.Promise = require("bluebird");
 
 const express = require("express");
@@ -58,6 +62,10 @@ mongoose.connect("mongodb://127.0.0.1/project6", {
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all the work for us.
 app.use(express.static(__dirname));
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 
 // set up sessions
 app.use(session({
@@ -100,7 +108,7 @@ app.get("/", function (request, response) {
 app.get("/test/:p1", async function (request, response) {
   // Express parses the ":p1" from the URL and returns it in the request.params
   // objects.
-  console.log("/test called with param1 = ", request.params.p1);
+  //console.log("/test called with param1 = ", request.params.p1);
 
   const param = request.params.p1 || "info";
 
@@ -362,6 +370,27 @@ app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, resp
   });
   return "Unknown Error";
 }));
+//Upload new photos
+app.post("/photos/new", asyncHandler(async function (request, response) {
+  processFormBody(request, response, function(err) {
+    if (request.file.originalname === undefined)
+    {
+      return response.status(400).send("No File Uploaded");
+    }
+    //console.log(request.file)
+    //console.log(request.body.userId);
+    const timestamp = new Date().valueOf();
+    let tempFileName = request.file.originalname
+    const filename = 'U' +  String(timestamp) + tempFileName.replaceAll(" ","");
+    const photoObj = {file_name: filename, user_id:request.body.userId}; 
+    console.log(JSON.stringify(photoObj));
+    //console.log(filename); 
+    fs.writeFile("./images/" + filename, request.file.buffer, function(err) {
+      Photo.insertMany(photoObj);
+    })
+  })
+  response.send("Photo Successfully Uploaded");
+}))
 
 /**
  * URL /user-exp/:id - Returns the Expanded Information for User of id.
