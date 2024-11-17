@@ -61,6 +61,7 @@ function App() {
                     <Route path="/comments/:userId" element={<CommentsRoute/>} />
                     <Route path="/photos/:userId/*" element={<UserPhotosRoute  />} />
                     <Route path="/users" element={(<UserList/>)} />
+                    <Route path="/photo/upload" element={<PhotoUpload/>}></Route>
                     <Route
                     path="/"
                     element={<Button href="#users">Navigate to Users</Button>}
