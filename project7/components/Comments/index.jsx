@@ -10,7 +10,6 @@ import {
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
-import PhotoUpload from "./components/PhotoUpload";
 
 
 // user comment list component
