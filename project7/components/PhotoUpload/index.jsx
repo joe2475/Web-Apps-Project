@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import useStateContext from "../Context";
 import { makeStyles } from '@mui/styles';
-import { Button, Input} from "@mui/material";
+import { Button, Input, Typography, Card} from "@mui/material";
 //import FileUploadIcon from '@mui/material/Icon';
 
 const useStyles = makeStyles({
@@ -60,27 +60,20 @@ function PhotoUpload()
    //  startIcon={<FileUploadIcon/>}
     return(
     <>
-<h1 className={classes.h1}>Upload Photo</h1>
-<div>
-<Button
-  component="label"
-  role={undefined}
-  variant="contained"
-  tabIndex={-1}
->
-  Upload files
-  <Input
-    type="file"
-    onChange={(event) => {handleChange(event)}}
-  />
-</Button>
-</div>
-<div>
-<Button
-onClick={(event) => {handleSubmit(event)}}>
-    Submit 
-</Button>
-</div>
+      <Typography variant="h5">
+        Upload Photo
+      </Typography>
+      <Card sx={{ p: 2 }}>      
+        <Input
+            type="file"
+            onChange={(event) => {handleChange(event)}}
+          />
+        <Button
+        onClick={(event) => {handleSubmit(event)}}
+        variant="contained" color="primary">
+            Submit 
+        </Button>
+      </Card>
     </>
     )
 }

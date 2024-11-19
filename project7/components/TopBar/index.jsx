@@ -76,6 +76,7 @@ function getText(){
   return(
     <Routes>
       <Route path="/users/:userId" element={<UserPage />} />
+      <Route path="/photos/upload/*" element={"Upload Photo"} />
       <Route path="/photos/:userId/*" element={<UserPhotos />} />
       <Route path="/comments/:userId/*" element={<UserComments />} />
       <Route path="/users" element={"All Users"} />
@@ -101,16 +102,16 @@ function TopBar() {
     <AppBar className="topbar-appBar" position="absolute">
       <Toolbar>
         <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
-          {firstname? firstname: "Please Log In"}
+          {username? firstname: "Please Log In"}
         </Typography>
         <FormGroup>
           <FormControlLabel control={<Switch checked={useAdvanced} onChange={(event)=>{setUseAdvanced(event.target.checked);}} color="secondary"/>} label="Enable Advanced Features" />
         </FormGroup>  
         <Typography variant="h5" color="inherit">
           {getText()}
-          <Button component={Link} to='/photo/upload' variant="contained" color="primary">Add Photo</Button>
         </Typography>
-        {username? <Logout /> : ""}
+          {username? <Button component={Link} to='/photo/upload' variant="contained" color="secondary">Add Photo</Button> : ""}
+          {username? <Logout /> : ""}
       </Toolbar>
     </AppBar>
   );
