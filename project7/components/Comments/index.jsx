@@ -10,6 +10,7 @@ import {
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
+import AddComment from "../AddComments";
 
 
 // user comment list component
@@ -58,6 +59,7 @@ function UserComments({userId}) {
                 </Grid>
               </CardActionArea>
             </Card>
+            <AddComment photoId={item.photo_id}/>
           </div>
         );
       }) : <h2>No Comments.</h2>}</> :
