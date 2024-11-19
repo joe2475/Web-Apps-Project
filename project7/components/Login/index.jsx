@@ -42,19 +42,30 @@ export function RegisterView({changeView}){
     const [localPasswordA, setLocalPasswordA] = useState("");
     const [localPasswordB, setLocalPasswordB] = useState("");
 
-    // logout post
-    function login_request(){
-        axios.post("/admin/logout").then(
-            function(success){
-                console.log("posted logout"); 
-                setUsername(undefined);
-                setFirstname(undefined);
-                setLastname(undefined);
-                setUser_id(undefined);
-            },
-            (failure) => {console.log(failure);  }
-        );
-    };
+    // register post
+    function register_request(){
+        // validate password
+        if (localPasswordA == localPasswordB){
+            axios.post("/user", 
+                {'login_name': localUsername, 
+                    'password': localPasswordA,
+                    'first_name': localFirstName,
+                    'last_name': localLastName,
+                }).then(
+                function(success){
+                    const user = success.data;
+                    //console.log(user);
+                    setUsername(user.login_name);
+                    setFirstname(user.first_name);
+                    setLastname(user.last_name);
+                    setUser_id(user._id);
+                    
+                    console.log("posted login");
+                },
+                (failure) => {console.log(failure);  }
+            );
+        }
+    }
 
     return(
         <>
@@ -69,7 +80,7 @@ export function RegisterView({changeView}){
             onChange={(event) => {setLocalPasswordA(event.target.value)}} />
             <TextField required id="outlined-password-input" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPasswordB(event.target.value)}} />
-            <Button variant="contained" onClick={() => {login_request();}} sx={{ m: 2 }}>
+            <Button variant="contained" onClick={() => {register_request();}} sx={{ m: 2 }}>
                 Register
             </Button>
             <Button variant="contained" onClick={() => {changeView(true)}} sx={{ m: 2 }}>
@@ -111,7 +122,7 @@ function LoginView({changeView}){
 
     // login post
     function login_request(){
-        axios.post("/admin/login", {'login_name': localUsername}).then(
+        axios.post("/admin/login", {'login_name': localUsername, 'password': localPassword}).then(
             function(success){
                 const user = success.data;
                 //console.log(user);
@@ -123,7 +134,7 @@ function LoginView({changeView}){
                 console.log("posted login");
             },
             (failure) => {console.log(failure);  }
-            );
+        );
     }
 
     return(

@@ -52,6 +52,7 @@ const bodyParser = require("body-parser");
 const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
+const { Console } = require('console');
 
 // connect to mongo
 mongoose.set("strictQuery", false);
@@ -471,20 +472,32 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
       return response.status(400).json(err); // Send the error as JSON
     }
 
-    // record login
-    request.session.regenerate(function (err){
-      if (err) next(err);
+    const user_passkey = await User.find({login_name: username}, "password");
+    if (user_info.length == 0){
+      return response.status(400).json(err); // Send the error as JSON
+    }
 
-      // create session
-      request.session.user = username;
+    // validate password
+    if (user_passkey[0].password == request.body.password){
+      // record login
+      request.session.regenerate(function (err){
+        if (err) next(err);
 
-      request.session.save(function (err){
-        if(err) return next(err);
-        response.json(user_info[0]); // return json
-        console.log("Login successful");
+        // create session
+        request.session.user = username;
+
+        request.session.save(function (err){
+          if(err) return next(err);
+          response.json(user_info[0]); // return json
+          console.log("Login successful");
+        })
       })
-    })
-
+    }
+    // if invalid, return error
+    else{
+      console.log("password rejected");
+      return response.status(403).json(err); // Send the error as JSON
+    }
   }
   catch(err){
     console.error("Bad param " + request.params, err);
@@ -516,6 +529,80 @@ app.post("/admin/logout", async function (request, response) {
 
     // collect session user
     //response.send(user);
+  }
+  catch(err){
+    console.error("Bad param " + request.params, err);
+    return response.status(400).json(err); // Send the error as JSON
+  }
+});
+
+/**
+ * URL /user
+ */
+app.post("/user", express.urlencoded({ extended: false }),
+  async function (request, response) {
+  try{
+   
+    console.log(request.body);
+
+    // validate contents -----------
+    const login_name_r = request.body.login_name;
+    const password_r = request.body.password;
+    const first_name_r = request.body.first_name;
+    const last_name_r = request.body.last_name;
+    const location_r = request.body.location;
+    const description_r = request.body.description;
+    const occupation_r = request.body.occupation;
+
+    // ensure login name, password, and names exist
+    if (!(login_name_r && password_r && first_name_r && last_name_r)){
+      console.log("Invalid input");
+      return response.status(400).json(err);
+    }
+
+    // ensure login name is new
+    const existing_names = await User.find({login_name: login_name_r}, "login_name");
+    if (existing_names.length != 0){
+      console.log("User already exists");
+      return response.status(400).json(err); // Send the error as JSON
+    }
+
+    // generate new user
+    const userObject = {
+      login_name: login_name_r,
+      password: password_r,
+      first_name: first_name_r,
+      last_name: last_name_r,
+      location: (location_r? location_r: ""),
+      description: (description_r? description_r: ""),
+      occupation: (occupation_r? occupation_r: "")
+    }
+
+    const userResponse = await User.create (userObject);
+    console.log("New user: " + userResponse);
+
+    // attempt login -----------
+    console.log("Login request: username '" + login_name_r + "'");
+
+    //validate login
+    const user_info = await User.find({login_name: login_name_r}, "_id first_name last_name login_name");
+    if (user_info.length == 0){
+      return response.status(400).json(err); // Send the error as JSON
+    }
+
+    // record login
+    request.session.regenerate(function (err){
+      if (err) next(err);
+
+      // create session
+      request.session.user = login_name_r;
+
+      request.session.save(function (err){
+        if(err) return next(err);
+        response.json(user_info[0]); // return json
+        console.log("Login successful");
+      })
+    })
   }
   catch(err){
     console.error("Bad param " + request.params, err);
