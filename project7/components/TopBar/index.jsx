@@ -1,8 +1,8 @@
 "use strict";
 
 import React, {useState, useEffect} from "react";
-import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel} from "@mui/material";
-import { Route, Routes, useParams } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel, Button} from "@mui/material";
+import { Route, Routes, useParams, Link } from "react-router-dom";
 
 import "./styles.css";
 import axios from "axios";
@@ -76,6 +76,7 @@ function getText(){
   return(
     <Routes>
       <Route path="/users/:userId" element={<UserPage />} />
+      <Route path="/photos/upload/*" element={"Upload Photo"} />
       <Route path="/photos/:userId/*" element={<UserPhotos />} />
       <Route path="/comments/:userId/*" element={<UserComments />} />
       <Route path="/users" element={"All Users"} />
@@ -83,6 +84,8 @@ function getText(){
     </Routes>
   );
 }
+
+
 
 // topbar component
 // if props provided, props are expected to be a flag/setFlag pair object
@@ -99,7 +102,7 @@ function TopBar() {
     <AppBar className="topbar-appBar" position="absolute">
       <Toolbar>
         <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
-          {firstname? firstname: "Please Log In"}
+          {username? firstname: "Please Log In"}
         </Typography>
         <FormGroup>
           <FormControlLabel control={<Switch checked={useAdvanced} onChange={(event)=>{setUseAdvanced(event.target.checked);}} color="secondary"/>} label="Enable Advanced Features" />
@@ -107,10 +110,12 @@ function TopBar() {
         <Typography variant="h5" color="inherit">
           {getText()}
         </Typography>
-        {username? <Logout /> : ""}
+          {username? <Button component={Link} to='/photo/upload' variant="contained" color="secondary">Add Photo</Button> : ""}
+          {username? <Logout /> : ""}
       </Toolbar>
     </AppBar>
   );
 }
 
 export default TopBar;
+//<Link to='/photo/upload'>Upload Photo</Link>

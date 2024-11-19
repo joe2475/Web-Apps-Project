@@ -11,7 +11,7 @@ import UserPhotos from "../UserPhotos";
 import UserComments from "../Comments";
 import useStateContext from "../Context";
 import Login from "../Login";
-
+import PhotoUpload from "../PhotoUpload";
 //call on user detail component
 function UserDetailRoute() {
   const {userId} = useParams();
@@ -61,6 +61,7 @@ function App() {
                     <Route path="/comments/:userId" element={<CommentsRoute/>} />
                     <Route path="/photos/:userId/*" element={<UserPhotosRoute  />} />
                     <Route path="/users" element={(<UserList/>)} />
+                    <Route path="/photo/upload" element={<PhotoUpload/>}></Route>
                     <Route
                     path="/"
                     element={<Button href="#users">Navigate to Users</Button>}
