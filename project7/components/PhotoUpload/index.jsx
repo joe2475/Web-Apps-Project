@@ -1,9 +1,30 @@
 import React, {useState} from "react";
 import axios from "axios";
+import useStateContext from "../Context";
+import { makeStyles } from '@mui/styles';
+import { Button, Input} from "@mui/material";
+//import FileUploadIcon from '@mui/material/Icon';
+
+const useStyles = makeStyles({
+    root: {
+      '& > *': {
+        margin: "auto",
+      },
+    },
+    input: {
+     // display: 'none',
+    },
+    h1:{
+        textAlign: "center"
+    }
+  });
 function PhotoUpload()
 {
-    //Test userId Ian 6734ea8f336943f1ccc4b552
+    const classes = useStyles();
     const [photo, setPhoto] = useState();
+    const userInfo = useStateContext();
+    const userId = userInfo.user_id;
+    //console.log(userId); 
     function handleChange(event)
     {
         setPhoto(event.target.files[0]); 
@@ -18,7 +39,7 @@ function PhotoUpload()
         const data = new FormData();
         data.append('file',photo); 
         data.append('filename', photo.name);
-        data.append('userId','6734ea8f336943f1ccc4b552'); 
+        data.append('userId',userId); 
         console.log(photo.name);
         //console.log(data);
         const config = {
@@ -36,16 +57,30 @@ function PhotoUpload()
     }
     }
    // console.log("Test");
+   //  startIcon={<FileUploadIcon/>}
     return(
     <>
-
-    <div>
-        <form onSubmit={handleSubmit}>
-        <h1>Upload A Photo</h1>
-        <input type="file" onChange={handleChange}/>
-        <button type="submit">Upload</button>
-        </form>
-    </div>
+<h1 className={classes.h1}>Upload Photo</h1>
+<div>
+<Button
+  component="label"
+  role={undefined}
+  variant="contained"
+  tabIndex={-1}
+>
+  Upload files
+  <Input
+    type="file"
+    onChange={(event) => {handleChange(event)}}
+  />
+</Button>
+</div>
+<div>
+<Button
+onClick={(event) => {handleSubmit(event)}}>
+    Submit 
+</Button>
+</div>
     </>
     )
 }

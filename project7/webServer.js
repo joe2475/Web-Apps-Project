@@ -32,10 +32,10 @@
  *                      Each photo should have all the Comments on the Photo
  *                      (JSON format).
  */
-var multer  = require('multer');
+const multer  = require('multer');
 const processFormBody = multer({storage: multer.memoryStorage()}).single('file');
 
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 const fs = require("fs");
 mongoose.Promise = require("bluebird");
@@ -46,7 +46,7 @@ const app = express();
 
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const multer = require("multer");
+//const multer = require("multer");
 
 // Load the Mongoose schema for User, Photo, and SchemaInfo
 const User = require("./schema/user.js");
@@ -372,7 +372,7 @@ app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, resp
 }));
 //Upload new photos
 app.post("/photos/new", asyncHandler(async function (request, response) {
-  processFormBody(request, response, function(err) {
+  processFormBody(request, response, function() {
     if (request.file.originalname === undefined)
     {
       return response.status(400).send("No File Uploaded");

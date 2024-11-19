@@ -11,7 +11,7 @@ import UserPhotos from "../UserPhotos";
 import UserComments from "../Comments";
 import useStateContext from "../Context";
 import Login from "../Login";
-
+import PhotoUpload from "../PhotoUpload";
 //call on user detail component
 function UserDetailRoute() {
   const {userId} = useParams();
