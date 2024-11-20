@@ -399,10 +399,11 @@ app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function 
   console.log(com);
   console.log(id);
   console.log(userId);
+  const phoObj = {comment: com, date_time: new Date(Date.now()), user_id:userId}
   Photo.updateOne(
     {_id : id},
-    {$push : {comment: [com,new Date(Date.now()), userId]}}
-  )
+    {$addToSet: {comments: phoObj}}
+  ).exec();
 }))
 
 /**

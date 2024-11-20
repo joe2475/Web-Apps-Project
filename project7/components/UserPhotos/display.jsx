@@ -57,12 +57,9 @@ export function PhotoUnit({photo, user}){
       console.log("Test Mount");
       //console.log(`This is the text : ${addCom}`)
       //console.log(`photo id is : ${phId}`);
-      setCom("");
       const url = `/commentsOfPhoto/${phId}`; 
         const data = {'comment':addCom, 'user':userId};
         
-       // data.append('comment',addCom); 
-       // data.append('user', userId);
         console.log(data);
         const config = {
             headers : {
@@ -71,7 +68,9 @@ export function PhotoUnit({photo, user}){
         };
         axios.post(url, data, config).then((response) => {
             console.log(response.data);
+            setCom("");
         })
+        
     }
     didMount.current = true;
   },[addCom]);
@@ -103,7 +102,6 @@ function handleOnSubmit(event, photoId)
     {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} />) : <br />}
   </div>
   <div>
-    <p>{com}</p>
   <TextField fullWidth label="comment" id="comment" onChange={(e) => {handleOnChange(e)}}/>
     <Button  variant="contained" onClick={(e) => {handleOnSubmit(e, photo._id)}}>Add Comment</Button></div>
 </>
