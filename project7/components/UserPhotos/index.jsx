@@ -1,5 +1,3 @@
-"use strict";
-
 import React, {useEffect, useState} from "react";
 import { Typography, 
   Divider,
@@ -48,9 +46,7 @@ function UserPhotos({userId}) {
   const [photos, setPhotos] = useState(""); // photos of user
   const [user, setuser] = useState(""); // user owner of photos
   const location = useLocation();
-
   const {useAdvanced, username} = useStateContext(); // get flags
-
   // regenerate when location changes
   useEffect(() => {}, [location]);
 
@@ -64,7 +60,7 @@ function UserPhotos({userId}) {
       setuser(result[1].data);
       //console.log(photos, "\n", user)
     },
-  (err) => {
+  () => {
     setPhotos("");
     setuser("");
   });
@@ -100,19 +96,21 @@ function UserPhotos({userId}) {
   return(
     <div className="photoGroup">
       {useAdvanced?
-        <Routes>
-          <Route path="/:photoId" element={<CallExperimental user={user} photos={photos} />} />
+      (
+      <Routes>
+          <Route path="/:photoId" element={<CallExperimental user={user} photos={photos} setPhotos={setPhotos} />} />
           <Route path="/*" element={<Navigate to={getFirstPhoto()}/>}  />
-        </Routes>:
+      </Routes>
+      ):
       <>{photos.map((photo) => {
               return( 
                 <div key={photo._id}>
-                  {<PhotoUnit photo={photo} user={user} />}
+                  {<PhotoUnit photo={photo} user={user} setPhotos={setPhotos}/>}
                   <br/><Divider/><br/>
                 </div>
               );
-            })}</>
-          }
+            })}
+      </>}
     </div>
   );
 }
