@@ -3,7 +3,7 @@ import axios from "axios";
 import useStateContext from "../Context";
 import { makeStyles } from '@mui/styles';
 import { Button, Input} from "@mui/material";
-//import FileUploadIcon from '@mui/material/Icon';
+
 
 const useStyles = makeStyles({
     root: {
@@ -24,7 +24,6 @@ function PhotoUpload()
     const [photo, setPhoto] = useState();
     const userInfo = useStateContext();
     const userId = userInfo.user_id;
-    //console.log(userId); 
     function handleChange(event)
     {
         setPhoto(event.target.files[0]); 
@@ -41,7 +40,6 @@ function PhotoUpload()
         data.append('filename', photo.name);
         data.append('userId',userId); 
         console.log(photo.name);
-        //console.log(data);
         const config = {
             headers : {
                 'content-type': 'multipart/form-data'
@@ -56,8 +54,6 @@ function PhotoUpload()
         console.log("No File Loaded");
     }
     }
-   // console.log("Test");
-   //  startIcon={<FileUploadIcon/>}
     return(
     <>
 <h1 className={classes.h1}>Upload Photo</h1>

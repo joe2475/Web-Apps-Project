@@ -404,6 +404,7 @@ app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function 
     {_id : id},
     {$addToSet: {comments: phoObj}}
   ).exec();
+  response.send("Added Comment");
 }))
 
 /**

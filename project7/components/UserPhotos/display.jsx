@@ -10,7 +10,6 @@ import { Typography,
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
-
 // display components for UserPhotos Component
 // separated to different file for clarity
 // format datetime for display
@@ -41,38 +40,38 @@ export function CommentUnit({comment}){
 export function PhotoUnit({photo, user}){
   const [com, setCom] = useState("");
   const [addCom, setAddCom] = useState("");
-  const [phId, setPhId] = useState("");
-  var didMount = useRef(false); 
+  const [phId, setPhId] = useState(""); 
   const userInfo = useStateContext();
   const userId = userInfo.user_id;
+  var didMount = useRef(false);
   function handleOnChange(event)
   {
     event.preventDefault();
     setCom(event.target.value);
   }
   useEffect(()=>{
-    //console.log("made it to use effect");
     if (didMount.current)
     { 
-      console.log("Test Mount");
-      //console.log(`This is the text : ${addCom}`)
-      //console.log(`photo id is : ${phId}`);
       const url = `/commentsOfPhoto/${phId}`; 
-        const data = {'comment':addCom, 'user':userId};
-        
+        const data = {'comment':addCom, 'user':userId};       
         console.log(data);
         const config = {
             headers : {
                 'content-type': 'application/json'
             },
         };
-        axios.post(url, data, config).then((response) => {
-            console.log(response.data);
-            setCom("");
+        Promise.all([
+        axios.post(url, data, config),
+        axios.get("/photosOfUser/"+user._id),
+        ]).then((response) => {
+            console.log("Test"); 
+            photo = response[0].data;
+            console.log(`This is photo obj : ${photo}`);
         })
-        
+       // setCom("Y");
     }
     didMount.current = true;
+   // setCom("Y");
   },[addCom]);
 function handleOnSubmit(event, photoId)
 {
