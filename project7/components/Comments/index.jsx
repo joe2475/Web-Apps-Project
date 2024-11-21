@@ -12,6 +12,7 @@ import axios from "axios";
 import useStateContext from "../Context";
 
 
+
 // user comment list component
 function UserComments({userId}) {
 
@@ -58,6 +59,7 @@ function UserComments({userId}) {
                 </Grid>
               </CardActionArea>
             </Card>
+            <AddComment photoId={item.photo_id}/>
           </div>
         );
       }) : <h2>No Comments.</h2>}</> :
