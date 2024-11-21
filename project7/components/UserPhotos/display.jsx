@@ -1,5 +1,3 @@
-"use strict";
-
 import React, { useState, useEffect, useRef } from "react";
 import { Typography, 
   Card,
@@ -37,7 +35,7 @@ export function CommentUnit({comment}){
 
 
 // component for photo display, with photo, metadata, and comments
-export function PhotoUnit({photo, user}){
+export function PhotoUnit({photo, user, setPhotos}){
   const [com, setCom] = useState("");
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
@@ -53,33 +51,29 @@ export function PhotoUnit({photo, user}){
     if (didMount.current)
     { 
       const url = `/commentsOfPhoto/${phId}`; 
-        const data = {'comment':addCom, 'user':userId};       
-        console.log(data);
+        const data = {comment:addCom, user:userId};   
         const config = {
             headers : {
                 'content-type': 'application/json'
             },
         };
-        Promise.all([
-        axios.post(url, data, config),
-        axios.get("/photosOfUser/"+user._id),
-        ]).then((response) => {
-            console.log("Test"); 
-            photo = response[0].data;
-            console.log(`This is photo obj : ${photo}`);
-        })
-       // setCom("Y");
+        axios.post(url, data, config).then((response) => {
+         //   console.log(JSON.stringify(response.data)); 
+            console.log(response.data);
+        });
+        axios.get(`/photosOfUser/${user._id}`).then((result) => {
+          setCom("");
+          setPhotos(result.data);
+        });
+        
     }
     didMount.current = true;
-   // setCom("Y");
   },[addCom]);
 function handleOnSubmit(event, photoId)
 {
   event.preventDefault();
-  console.log(com);
- // console.log(photoId);
   setPhId(photoId);
-  setAddCom(com); 
+  setAddCom(com);  
 }
 
   // return loading if no contents
@@ -87,7 +81,8 @@ function handleOnSubmit(event, photoId)
     return(<h3>Loading Photo...</h3>);
   }
 
-  return(<>
+  return(
+<>
   <div key={photo._id} className="photo">
     <img src={"/images/" + photo.file_name} alt={"User Sumbitted Content"} className="photoImage"/>
     <br />
@@ -101,8 +96,9 @@ function handleOnSubmit(event, photoId)
     {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} />) : <br />}
   </div>
   <div>
-  <TextField fullWidth label="comment" id="comment" onChange={(e) => {handleOnChange(e)}}/>
-    <Button  variant="contained" onClick={(e) => {handleOnSubmit(e, photo._id)}}>Add Comment</Button></div>
+  <TextField fullWidth label="comment" id="comment" value={com} onChange={(e) => {handleOnChange(e);}}/>
+    <Button variant="contained" onClick={(e) => {handleOnSubmit(e, photo._id);}}>Add Comment</Button>
+  </div>
 </>
   );
 }
