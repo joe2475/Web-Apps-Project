@@ -42,8 +42,8 @@ function Login(){
                 const user = success.data;
                 //console.log(user);
                 setUsername(user.login_name);
-                setFirstname(user.firstname);
-                setLastname(user.lastname);
+                setFirstname(user.first_name);
+                setLastname(user.last_name);
                 setUser_id(user._id);
                 
                 console.log("posted login");
