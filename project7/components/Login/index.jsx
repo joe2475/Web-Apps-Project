@@ -41,6 +41,10 @@ export function RegisterView({changeView}){
     const [localLastName, setLocalLastName] = useState("");
     const [localPasswordA, setLocalPasswordA] = useState("");
     const [localPasswordB, setLocalPasswordB] = useState("");
+    const [occupation, setLocalOccupation] = useState("");
+    const [location, setLocation] = useState("");
+    const [description, setDescription] = useState("");
+
 
     // register post
     function register_request(){
@@ -51,6 +55,9 @@ export function RegisterView({changeView}){
                     'password': localPasswordA,
                     'first_name': localFirstName,
                     'last_name': localLastName,
+                    'occupation': occupation,
+                    'description': description,
+                    'location': location,
                 }).then(
                 function(success){
                     const user = success.data;
@@ -80,6 +87,13 @@ export function RegisterView({changeView}){
             onChange={(event) => {setLocalPasswordA(event.target.value)}} />
             <TextField required id="outlined-password-input" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPasswordB(event.target.value)}} />
+            
+            <TextField required id="outlined-required" label="Location" variant="outlined" sx={{ m: 2 }}
+            onChange={(event) => {setLocation(event.target.value)}} />
+            <TextField required id="outlined-required" label="Occupation" variant="outlined" sx={{ m: 2 }}
+            onChange={(event) => {setLocalOccupation(event.target.value)}} />
+            <TextField required id="outlined-required" label="Description" variant="outlined" sx={{ m: 2 }}
+            onChange={(event) => {setDescription(event.target.value)}} />
             <Button variant="contained" onClick={() => {register_request();}} sx={{ m: 2 }}>
                 Register
             </Button>

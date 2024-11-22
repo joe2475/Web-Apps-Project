@@ -51,7 +51,7 @@ export function PhotoUnit({photo, user, setPhotos}){
     if (didMount.current)
     { 
       const url = `/commentsOfPhoto/${phId}`; 
-        const data = {comment:addCom, user:userId};   
+        const data = {comment:addCom};   
         const config = {
             headers : {
                 'content-type': 'application/json'

@@ -373,7 +373,7 @@ app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, resp
   return "Unknown Error";
 }));
 //Upload new photos
-app.post("/photos/new", asyncHandler(async function (request, response) {
+app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, response) {
   processFormBody(request, response, function() {
     if (request.file === undefined || request.file.originalname === undefined)
     {
@@ -394,16 +394,29 @@ app.post("/photos/new", asyncHandler(async function (request, response) {
   response.send("Photo Successfully Uploaded");
 }))
 
-app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function (request, response) {
+app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async function (request, response) {
+  try{
   const id = request.params.photo_id; 
   const com = request.body.comment; 
-  const userId = request.body.user; 
+
+  console.log("tak1");
+  console.log(request.session);
+  console.log("tak2");
+  console.log(request.session.user.userID);
+  console.log("tak3");
+
+  // get userID
+  const userId = request.session.user.userID;
+
+  console.log("tak4");
+
+  // log output
   console.log(com);
   console.log(id);
   console.log(userId);
 
   // validate
-  if(id == undefined || com == undefined || userId == undefined){
+  if(id === undefined || com === undefined || userId === undefined){
     return response.status(400).send("Invalid arguments");
   }
   else{
@@ -413,6 +426,9 @@ app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function 
       {$addToSet: {comments: phoObj}}
     ).exec();
     response.send("Added Comment");
+  }}
+  catch(err){
+    return
   }
 }))
 
@@ -491,9 +507,10 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
 
     //validate login
     const user_info = await User.find({login_name: username}, "_id first_name last_name login_name");
-    if (user_info.length == 0){
+    if (!(user_info.length > 0)){
       return response.status(400).json(err); // Send the error as JSON
     }
+    const user_id = user_info[0]._id;
 
     const user_passkey = await User.find({login_name: username}, "password");
     if (user_info.length == 0){
@@ -507,7 +524,7 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
         if (err) next(err);
 
         // create session
-        request.session.user = username;
+        request.session.user = {username: username, userID: user_id};
 
         request.session.save(function (err){
           if(err) return next(err);
@@ -618,7 +635,10 @@ app.post("/user", express.urlencoded({ extended: false }),
       if (err) next(err);
 
       // create session
-      request.session.user = login_name_r;
+      request.session.user = {
+        username: user_info[0].login_name, 
+        userID: user_info[0]._id};
+
 
       request.session.save(function (err){
         if(err) return next(err);
