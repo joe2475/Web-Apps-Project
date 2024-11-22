@@ -374,24 +374,33 @@ app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, resp
 }));
 //Upload new photos
 app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, response) {
-  processFormBody(request, response, function() {
-    if (request.file === undefined || request.file.originalname === undefined)
-    {
-      return response.status(400).send("No File Uploaded");
-    }
-    //console.log(request.file)
-    //console.log(request.body.userId);
-    const timestamp = new Date().valueOf();
-    let tempFileName = request.file.originalname
-    const filename = 'U' +  String(timestamp) + tempFileName.replaceAll(" ","");
-    const photoObj = {file_name: filename, user_id:request.body.userId}; 
-    console.log(JSON.stringify(photoObj));
-    //console.log(filename); 
-    fs.writeFile("./images/" + filename, request.file.buffer, function(err) {
-      Photo.insertMany(photoObj);
-    })
+  try{
+    processFormBody(request, response, function() {
+      if (request.file === undefined || request.file.originalname === undefined)
+      {
+        return response.status(400).send("No File Uploaded");
+      }
+      //console.log(request.file)
+      //console.log(request.body.userId);
+      const timestamp = new Date().valueOf();
+      let tempFileName = request.file.originalname;
+      const filename = 'U' +  String(timestamp) + tempFileName.replaceAll(" ","");
+      const photoObj = {
+        file_name: filename, 
+        user_id: request.session.user.userID}; 
+      console.log(JSON.stringify(photoObj));
+      //console.log(filename); 
+      fs.writeFile("./images/" + filename, request.file.buffer, function(err) {
+        Photo.insertMany(photoObj);
+      })
+
+      // return on success
+      return response.json(photoObj);
   })
-  response.send("Photo Successfully Uploaded");
+  response.send("Photo Successfully Uploaded");}
+  catch(err){
+    return response.status(400).json(err); // Send the error as JSON
+  }
 }))
 
 app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async function (request, response) {
@@ -399,16 +408,8 @@ app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(asyn
   const id = request.params.photo_id; 
   const com = request.body.comment; 
 
-  console.log("tak1");
-  console.log(request.session);
-  console.log("tak2");
-  console.log(request.session.user.userID);
-  console.log("tak3");
-
   // get userID
   const userId = request.session.user.userID;
-
-  console.log("tak4");
 
   // log output
   console.log(com);
@@ -428,7 +429,7 @@ app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(asyn
     response.send("Added Comment");
   }}
   catch(err){
-    return
+    return response.status(400).json(err); // Send the error as JSON
   }
 }))
 
