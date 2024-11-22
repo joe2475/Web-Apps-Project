@@ -86,7 +86,7 @@ function isLoggedIn(request, response, next){
   else{
     // respond with not logged in error
     console.log("Information request: no user found")
-    return response.status(403).send("Unauthorized access: Not logged in.");
+    return response.status(401).send("Unauthorized access: Not logged in.");
   } 
 }
 
@@ -375,7 +375,7 @@ app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, resp
 //Upload new photos
 app.post("/photos/new", asyncHandler(async function (request, response) {
   processFormBody(request, response, function() {
-    if (request.file.originalname === undefined)
+    if (request.file === undefined || request.file.originalname === undefined)
     {
       return response.status(400).send("No File Uploaded");
     }
