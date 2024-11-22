@@ -376,10 +376,14 @@ app.get("/user-exp/list", isLoggedIn, asyncHandler(async function (request, resp
 app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, response) {
   try{
     processFormBody(request, response, function() {
+      console.log("Photo upload0");
+
       if (request.file === undefined || request.file.originalname === undefined)
       {
-        return response.status(400).send("No File Uploaded");
+        return new Error("No File Uploaded");
       }
+      console.log("Photo upload2");
+
       //console.log(request.file)
       //console.log(request.body.userId);
       const timestamp = new Date().valueOf();
