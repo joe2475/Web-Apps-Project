@@ -513,13 +513,13 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
     //validate login
     const user_info = await User.find({login_name: username}, "_id first_name last_name login_name");
     if (!(user_info.length > 0)){
-      return response.status(400).json(err); // Send the error as JSON
+      return response.status(400).send("Invalid input"); // Send the error as JSON
     }
     const user_id = user_info[0]._id;
 
     const user_passkey = await User.find({login_name: username}, "password");
     if (user_info.length == 0){
-      return response.status(400).json(err); // Send the error as JSON
+      return response.status(400).send("Invalid input"); // Send the error as JSON
     }
 
     // validate password
@@ -541,7 +541,7 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
     // if invalid, return error
     else{
       console.log("password rejected");
-      return response.status(400).json(err); // Send the error as JSON
+      return response.status(400).send("Invalid input"); // Send the error as JSON
     }
   }
   catch(err){
@@ -602,14 +602,14 @@ app.post("/user", express.urlencoded({ extended: false }),
     // ensure login name, password, and names exist
     if (!(login_name_r && password_r && first_name_r && last_name_r)){
       console.log("Invalid input");
-      return response.status(400).json(err);
+      return response.status(400).send("Invalid input");
     }
 
     // ensure login name is new
     const existing_names = await User.find({login_name: login_name_r}, "login_name");
     if (existing_names.length != 0){
       console.log("User already exists");
-      return response.status(400).json(err); // Send the error as JSON
+      return response.status(400).send("Invalid input"); // Send the error as JSON
     }
 
     // generate new user
@@ -632,7 +632,7 @@ app.post("/user", express.urlencoded({ extended: false }),
     //validate login
     const user_info = await User.find({login_name: login_name_r}, "_id first_name last_name login_name");
     if (user_info.length == 0){
-      return response.status(400).json(err); // Send the error as JSON
+      return response.status(400).send("Invalid input"); // Send the error as JSON
     }
 
     // record login
