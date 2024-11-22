@@ -21,7 +21,7 @@ function PhotoUpload()
         console.log(photo);
         const url = '/photos/new'; 
         const data = new FormData();
-        data.append('file',photo); 
+        data.append('uploadedphoto',photo); 
         data.append('filename', photo.name);
         data.append('userId',userId); 
         console.log(photo.name);

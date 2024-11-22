@@ -33,7 +33,7 @@
  *                      (JSON format).
  */
 const multer  = require('multer');
-const processFormBody = multer({storage: multer.memoryStorage()}).single('file');
+const processFormBody = multer({storage: multer.memoryStorage()}).single('uploadedphoto');
 
 //var bodyParser = require('body-parser');
 const mongoose = require("mongoose");
