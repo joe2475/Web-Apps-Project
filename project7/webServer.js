@@ -46,6 +46,7 @@ const app = express();
 
 const session = require("express-session");
 const bodyParser = require("body-parser");
+var jsonParser = bodyParser.json()
 //const multer = require("multer");
 
 // Load the Mongoose schema for User, Photo, and SchemaInfo
@@ -391,6 +392,20 @@ app.post("/photos/new", asyncHandler(async function (request, response) {
     })
   })
   response.send("Photo Successfully Uploaded");
+}))
+app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function (request, response) {
+  const id = request.params.photo_id; 
+  const com = request.body.comment; 
+  const userId = request.body.user; 
+  console.log(com);
+  console.log(id);
+  console.log(userId);
+  const phoObj = {comment: com, date_time: new Date(Date.now()), user_id:userId}
+  Photo.updateOne(
+    {_id : id},
+    {$addToSet: {comments: phoObj}}
+  ).exec();
+  response.send("Added Comment");
 }))
 
 /**
