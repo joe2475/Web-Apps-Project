@@ -395,9 +395,9 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
       })
 
       // return on success
-      return response.json(photoObj);
+      //return response.json(photoObj);
   })
-  response.send("Photo Successfully Uploaded");}
+  return response.send("Photo Successfully Uploaded");}
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
   }
@@ -426,7 +426,7 @@ app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(asyn
       {_id : id},
       {$addToSet: {comments: phoObj}}
     ).exec();
-    response.send("Added Comment");
+    return response.send("Added Comment");
   }}
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
@@ -529,8 +529,8 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
 
         request.session.save(function (err){
           if(err) return next(err);
-          response.json(user_info[0]); // return json
           console.log("Login successful");
+          return response.json(user_info[0]); // return json
         })
       })
     }
@@ -643,8 +643,8 @@ app.post("/user", express.urlencoded({ extended: false }),
 
       request.session.save(function (err){
         if(err) return next(err);
-        response.json(user_info[0]); // return json
         console.log("Login successful");
+        return response.json(user_info[0]); // return json
       })
     })
   }
