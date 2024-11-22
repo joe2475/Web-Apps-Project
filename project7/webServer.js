@@ -393,6 +393,7 @@ app.post("/photos/new", asyncHandler(async function (request, response) {
   })
   response.send("Photo Successfully Uploaded");
 }))
+
 app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function (request, response) {
   const id = request.params.photo_id; 
   const com = request.body.comment; 
@@ -400,12 +401,19 @@ app.post("/commentsOfPhoto/:photo_id",  jsonParser, asyncHandler(async function 
   console.log(com);
   console.log(id);
   console.log(userId);
-  const phoObj = {comment: com, date_time: new Date(Date.now()), user_id:userId}
-  Photo.updateOne(
-    {_id : id},
-    {$addToSet: {comments: phoObj}}
-  ).exec();
-  response.send("Added Comment");
+
+  // validate
+  if(id == undefined || com == undefined || userId == undefined){
+    return response.status(400).send("Invalid arguments");
+  }
+  else{
+    const phoObj = {comment: com, date_time: new Date(Date.now()), user_id:userId}
+    Photo.updateOne(
+      {_id : id},
+      {$addToSet: {comments: phoObj}}
+    ).exec();
+    response.send("Added Comment");
+  }
 }))
 
 /**
@@ -511,7 +519,7 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
     // if invalid, return error
     else{
       console.log("password rejected");
-      return response.status(403).json(err); // Send the error as JSON
+      return response.status(400).json(err); // Send the error as JSON
     }
   }
   catch(err){
