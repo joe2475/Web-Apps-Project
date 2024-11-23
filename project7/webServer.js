@@ -80,7 +80,7 @@ app.use(bodyParser.json());
 
 // 'is logged in' middleware
 function isLoggedIn(request, response, next){
-  if (request.session.user) next();  // if user logged in, go to next middleware
+  if (request.session.user) return next();  // if user logged in, go to next middleware
   else{
     // respond with not logged in error
     console.log("Information request: no user found");
@@ -397,8 +397,9 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
       });
       // return on success
       //return response.json(photoObj);
+      return response.status(200).send("Photo Successfully Uploaded");
   });
-  return response.status(200).send("Photo Successfully Uploaded");
+  return true; //response.status(200).send("Photo Successfully Uploaded");
   }
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
@@ -541,6 +542,7 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
       console.log("password rejected");
       return response.status(400).send("Invalid input"); // Send the error as JSON
     }
+    return true; // Send the error as JSON
   }
   catch(err){
     console.error("Bad param " + request.params, err);
@@ -572,6 +574,7 @@ app.post("/admin/logout", async function (request, response) {
 
     // collect session user
     //response.send(user);
+    return true; // Send the error as JSON
   }
   catch(err){
     console.error("Bad param " + request.params, err);
@@ -649,6 +652,7 @@ app.post("/user", express.urlencoded({ extended: false }),
         return response.json(user_info[0]); // return json
       });
     });
+    return true; // Send the error as JSON
   }
   catch(err){
     console.error("Bad param " + request.params, err);
