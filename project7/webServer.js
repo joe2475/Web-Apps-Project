@@ -397,9 +397,8 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
       });
       // return on success
       //return response.json(photoObj);
-      
+      return response.send("Photo Successfully Uploaded");
   });
-  return response.send("Photo Successfully Uploaded");
   }
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
@@ -644,7 +643,7 @@ app.post("/user", express.urlencoded({ extended: false }),
         userID: user_info[0]._id};
 
 
-      request.session.save(function (err){
+      request.session.save(function (){
         if(err) return next(err);
         console.log("Login successful");
         return response.json(user_info[0]); // return json
