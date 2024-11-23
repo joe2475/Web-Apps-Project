@@ -1,5 +1,3 @@
-"use strict";
-
 import React, {useState, useEffect} from "react";
 import {
   Card,
@@ -39,7 +37,8 @@ function UserComments({userId}) {
   return (
     <div>
       {/*use advanced features*/}
-      {useAdvanced? <>{(model.comments && model.comments.length)? model.comments.map( (item, key) => {
+      {useAdvanced? 
+      <>{(model.comments && model.comments.length)? model.comments.map( (item, key) => {
         return (
           <div key={key}>
             <Card sx={{ m: 2 }}>
@@ -59,10 +58,10 @@ function UserComments({userId}) {
                 </Grid>
               </CardActionArea>
             </Card>
-            <AddComment photoId={item.photo_id}/>
           </div>
         );
-      }) : <h2>No Comments.</h2>}</> :
+      }) : <h2>No Comments.</h2>}
+      </> :
         <>
           {/*do not use advanced features*/}
           <h2>Enable experimental features to access User Comments page.</h2>

@@ -1,5 +1,3 @@
-"use strict";
-
 import React, {useEffect} from "react";
 import { Grid, Paper, Button } from "@mui/material";
 import { HashRouter, Route, Routes, useParams } from "react-router-dom";
@@ -48,11 +46,14 @@ function App() {
           </Grid>
           <div className="main-topbar-buffer" />
           {/*if not logged in, display only login prompt*/}
-          {username? <>
+          {username? (
+          <>
             <Grid item sm={3}>
+              (
                 <Paper className="main-grid-item">
                 <UserList/>
                 </Paper>
+              )
             </Grid>
             <Grid item sm={9}>
                 <Paper className="main-grid-item">
@@ -69,7 +70,7 @@ function App() {
                 </Routes>
                 </Paper>
             </Grid>
-          </>
+          </>)
           : <Grid item><Login /></Grid> }
         </Grid>
       </div>
