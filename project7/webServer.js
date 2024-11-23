@@ -72,7 +72,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 // set up sessions
 app.use(session({
   secret: "secret",
-  key: "key",
+  //key: "key",
   resave: true,   // save session back to store when edited
   saveUninitialized: true,  // if not fully initialized, then don't save
 }));
