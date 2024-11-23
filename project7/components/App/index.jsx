@@ -46,7 +46,7 @@ function App() {
           </Grid>
           <div className="main-topbar-buffer" />
           {/*if not logged in, display only login prompt*/}
-          {username? 
+          {username? (
           <>
             <Grid item sm={3}>
                 <Paper className="main-grid-item">
@@ -69,6 +69,7 @@ function App() {
                 </Paper>
             </Grid>
           </>
+          )
           : <Grid item><LoginRegister /></Grid> }
         </Grid>
       </div>

@@ -397,8 +397,8 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
       });
       // return on success
       //return response.json(photoObj);
-      return response.send("Photo Successfully Uploaded");
   });
+  return response.status(200).send("Photo Successfully Uploaded");
   }
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
@@ -523,14 +523,14 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
     // validate password
     if (user_passkey[0].password === request.body.password){
       // record login
-      request.session.regenerate(function (err){
-        if (err) next(err);
+      request.session.regenerate(function (){
+       // if (err) next(err);
 
         // create session
         request.session.user = {username: username, userID: user_id};
 
         request.session.save(function (){
-          if(err) return next(err);
+        //  if(err) return next(err);
           console.log("Login successful");
           return response.json(user_info[0]); // return json
         });
@@ -559,11 +559,11 @@ app.post("/admin/logout", async function (request, response) {
     request.session.user = null;
 
     // save change to session
-    request.session.save(function (err){
-      if (err) next(err);
+    request.session.save(function (){
+     // if (err) next(err);
 
       request.session.regenerate(function (){
-        if (err) next(err);
+       // if (err) next(err);
         response.redirect('/');
       });
     });
@@ -616,9 +616,9 @@ app.post("/user", express.urlencoded({ extended: false }),
       password: password_r,
       first_name: first_name_r,
       last_name: last_name_r,
-      location: (location_r? location_r: ""),
-      description: (description_r? description_r: ""),
-      occupation: (occupation_r? occupation_r: "")
+      location: (location_r), //? location_r: ""
+      description: (description_r), //? description_r: ""
+      occupation: (occupation_r) //? occupation_r: ""
     };
 
     const userResponse = await User.create (userObject);
@@ -634,8 +634,8 @@ app.post("/user", express.urlencoded({ extended: false }),
     }
 
     // record login
-    request.session.regenerate(function (err){
-      if (err) next(err);
+    request.session.regenerate(function (){
+     // if (err) next(err);
 
       // create session
       request.session.user = {
@@ -644,7 +644,7 @@ app.post("/user", express.urlencoded({ extended: false }),
 
 
       request.session.save(function (){
-        if(err) return next(err);
+     //   if(err) return next(err);
         console.log("Login successful");
         return response.json(user_info[0]); // return json
       });
