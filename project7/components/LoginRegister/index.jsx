@@ -43,6 +43,19 @@ export function RegisterView({changeView}){
 
     // register post
     function register_request(){
+        // validate elements
+        if (localUsername.length === 0){
+            setLocalError("Please enter a username.");
+            return;
+        }
+        if (localPasswordA.length === 0){
+            setLocalError("Invalid password length.");
+            return;
+        }
+        if (localFirstName.length === 0 || localLastName.length === 0){
+            setLocalError("Please enter a first and last name.");
+            return;
+        }
         // validate password
         if (localPasswordA === localPasswordB){
             axios.post("/user", 
@@ -78,25 +91,25 @@ export function RegisterView({changeView}){
     return(
         <>
             <Typography variant="h4" className="name">Register New User</Typography>
-            <TextField required id="outlined-required" label="Username" variant="outlined" sx={{ m: 2 }}
+            <TextField required label="Username" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalUsername(event.target.value);}} />
-            <TextField required id="outlined-required" label="First Name" variant="outlined" sx={{ m: 2 }}
+            <TextField required label="First Name" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalFirstName(event.target.value);}} />
-            <TextField required id="outlined-required" label="Last Name" variant="outlined" sx={{ m: 2 }}
+            <TextField required label="Last Name" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalLastName(event.target.value);}} />
-            <TextField required id="outlined-password-input" type="password" label="Password" variant="outlined" sx={{ m: 2 }}
+            <TextField required type="password" label="Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPasswordA(event.target.value);}} />
-            <TextField required id="outlined-password-input" type="password" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
+            <TextField required type="password" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPasswordB(event.target.value);}} />
             
-            <TextField required id="outlined-required" label="Location" variant="outlined" sx={{ m: 2 }}
+            <TextField required label="Location" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocation(event.target.value);}} />
-            <TextField required id="outlined-required" label="Occupation" variant="outlined" sx={{ m: 2 }}
+            <TextField required label="Occupation" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalOccupation(event.target.value);}} />
-            <TextField required id="outlined-required" label="Description" variant="outlined" sx={{ m: 2 }}
+            <TextField required label="Description" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setDescription(event.target.value);}} />
             <Button variant="contained" onClick={() => {register_request();}} sx={{ m: 2 }}>
-                Register
+                Register Me
             </Button>
             <Button variant="contained" onClick={() => {changeView(true);}} sx={{ m: 2 }}>
                 Returning user
