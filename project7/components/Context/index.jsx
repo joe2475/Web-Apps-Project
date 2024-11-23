@@ -1,5 +1,3 @@
-"use strict";
-
 import React, {createContext, useState, useContext} from "react";
 
 // state provider
@@ -21,7 +19,7 @@ export function Context({children}){
             }}>
             {children}
         </StateProvider.Provider>
-    )
+    );
 }
 
-export default function useStateContext(){return useContext(StateProvider)};
+export default function useStateContext(){return useContext(StateProvider);}

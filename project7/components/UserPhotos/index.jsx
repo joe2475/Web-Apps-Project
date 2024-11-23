@@ -102,15 +102,7 @@ function UserPhotos({userId}) {
           <Route path="/*" element={<Navigate to={getFirstPhoto()}/>}  />
       </Routes>
       ):
-      <>{photos.map((photo) => {
-              return( 
-                <div key={photo._id}>
-                  {<PhotoUnit photo={photo} user={user} setPhotos={setPhotos}/>}
-                  <br/><Divider/><br/>
-                </div>
-              );
-            })}
-      </>}
+      <>{photos.map((photo) => {return( <div key={photo._id}>{<PhotoUnit photo={photo} user={user} setPhotos={setPhotos}/>}<br/><Divider/><br/></div>);})}</>}
     </div>
   );
 }

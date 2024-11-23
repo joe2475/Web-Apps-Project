@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * This builds on the webServer of previous projects in that it exports the
  * current directory via webserver listing on a hard code (see portno below)
@@ -46,14 +44,14 @@ const app = express();
 
 const session = require("express-session");
 const bodyParser = require("body-parser");
-var jsonParser = bodyParser.json()
+var jsonParser = bodyParser.json();
 //const multer = require("multer");
 
 // Load the Mongoose schema for User, Photo, and SchemaInfo
 const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
-const { Console } = require('console');
+
 
 // connect to mongo
 mongoose.set("strictQuery", false);
@@ -85,7 +83,7 @@ function isLoggedIn(request, response, next){
   if (request.session.user) next();  // if user logged in, go to next middleware
   else{
     // respond with not logged in error
-    console.log("Information request: no user found")
+    console.log("Information request: no user found");
     return response.status(401).send("Unauthorized access: Not logged in.");
   } 
 }
@@ -394,18 +392,19 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
         user_id: request.session.user.userID}; 
       console.log(JSON.stringify(photoObj));
       //console.log(filename); 
-      fs.writeFile("./images/" + filename, request.file.buffer, function(err) {
+      fs.writeFile("./images/" + filename, request.file.buffer, function() {
         Photo.insertMany(photoObj);
-      })
-
+      });
       // return on success
       //return response.json(photoObj);
-  })
-  return response.send("Photo Successfully Uploaded");}
+      
+  });
+  return response.send("Photo Successfully Uploaded");
+  }
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
   }
-}))
+}));
 
 app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async function (request, response) {
   try{
@@ -425,7 +424,7 @@ app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(asyn
     return response.status(400).send("Invalid arguments");
   }
   else{
-    const phoObj = {comment: com, date_time: new Date(Date.now()), user_id:userId}
+    const phoObj = {comment: com, date_time: new Date(Date.now()), user_id:userId};
     Photo.updateOne(
       {_id : id},
       {$addToSet: {comments: phoObj}}
@@ -435,7 +434,7 @@ app.post("/commentsOfPhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(asyn
   catch(err){
     return response.status(400).json(err); // Send the error as JSON
   }
-}))
+}));
 
 /**
  * URL /user-exp/:id - Returns the Expanded Information for User of id.
@@ -518,12 +517,12 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
     const user_id = user_info[0]._id;
 
     const user_passkey = await User.find({login_name: username}, "password");
-    if (user_info.length == 0){
+    if (user_info.length === 0){
       return response.status(400).send("Invalid input"); // Send the error as JSON
     }
 
     // validate password
-    if (user_passkey[0].password == request.body.password){
+    if (user_passkey[0].password === request.body.password){
       // record login
       request.session.regenerate(function (err){
         if (err) next(err);
@@ -531,12 +530,12 @@ app.post("/admin/login", express.urlencoded({ extended: false }),
         // create session
         request.session.user = {username: username, userID: user_id};
 
-        request.session.save(function (err){
+        request.session.save(function (){
           if(err) return next(err);
           console.log("Login successful");
           return response.json(user_info[0]); // return json
-        })
-      })
+        });
+      });
     }
     // if invalid, return error
     else{
@@ -564,7 +563,7 @@ app.post("/admin/logout", async function (request, response) {
     request.session.save(function (err){
       if (err) next(err);
 
-      request.session.regenerate(function (err){
+      request.session.regenerate(function (){
         if (err) next(err);
         response.redirect('/');
       });
@@ -607,7 +606,7 @@ app.post("/user", express.urlencoded({ extended: false }),
 
     // ensure login name is new
     const existing_names = await User.find({login_name: login_name_r}, "login_name");
-    if (existing_names.length != 0){
+    if (existing_names.length !== 0){
       console.log("User already exists");
       return response.status(400).send("Invalid input"); // Send the error as JSON
     }
@@ -621,7 +620,7 @@ app.post("/user", express.urlencoded({ extended: false }),
       location: (location_r? location_r: ""),
       description: (description_r? description_r: ""),
       occupation: (occupation_r? occupation_r: "")
-    }
+    };
 
     const userResponse = await User.create (userObject);
     console.log("New user: " + userResponse);
@@ -631,7 +630,7 @@ app.post("/user", express.urlencoded({ extended: false }),
 
     //validate login
     const user_info = await User.find({login_name: login_name_r}, "_id first_name last_name login_name");
-    if (user_info.length == 0){
+    if (user_info.length === 0){
       return response.status(400).send("Invalid input"); // Send the error as JSON
     }
 
@@ -649,8 +648,8 @@ app.post("/user", express.urlencoded({ extended: false }),
         if(err) return next(err);
         console.log("Login successful");
         return response.json(user_info[0]); // return json
-      })
-    })
+      });
+    });
   }
   catch(err){
     console.error("Bad param " + request.params, err);

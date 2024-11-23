@@ -7,7 +7,6 @@ import { Typography,
 
 import "./styles.css";
 import axios from "axios";
-import useStateContext from "../Context";
 // display components for UserPhotos Component
 // separated to different file for clarity
 // format datetime for display
@@ -39,8 +38,6 @@ export function PhotoUnit({photo, user, setPhotos}){
   const [com, setCom] = useState("");
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
-  const userInfo = useStateContext();
-  const userId = userInfo.user_id;
   var didMount = useRef(false);
   function handleOnChange(event)
   {

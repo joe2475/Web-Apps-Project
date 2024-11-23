@@ -1,5 +1,3 @@
-"use strict";
-
 import React, {useState, useEffect} from "react";
 import { AppBar, Toolbar, Typography, Switch, FormGroup, FormControlLabel, Button} from "@mui/material";
 import { Route, Routes, useParams, Link } from "react-router-dom";

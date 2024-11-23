@@ -1,7 +1,5 @@
-"use strict";
-
 import React, {useState} from "react";
-import { Button, TextField, Typography, FormControl} from "@mui/material";
+import { Button, TextField, Typography} from "@mui/material";
 
 import axios from "axios";
 import useStateContext from "../Context";
@@ -12,7 +10,7 @@ export function Logout(){
     // logout post
     function logout_request(){
         axios.post("/admin/logout").then(
-            function(success){
+            function(){
                 console.log("posted logout"); 
                 setUsername(undefined);
                 setFirstname(undefined);
@@ -21,20 +19,17 @@ export function Logout(){
             },
             (failure) => {console.log(failure);  }
         );
-    };
+    }
 
     return(
-        <>
-            {username? <Button variant="contained" color="error" onClick={() => {logout_request()}} sx={{ m: 2 }}>
-                Logout
-            </Button>: ""}
-        </>
+        
+           (username? <Button variant="contained" color="error" onClick={() => {logout_request();}} sx={{ m: 2 }}> Logout </Button>: "")
     );    
-};
+}
 
 
 export function RegisterView({changeView}){
-    const {username, setUsername, setFirstname, setLastname, setUser_id} = useStateContext(); // get flags
+    const {setUsername, setFirstname, setLastname, setUser_id} = useStateContext(); // get flags
     
     const [localUsername, setLocalUsername] = useState("");
     const [localFirstName, setLocalFirstName] = useState("");
@@ -49,15 +44,15 @@ export function RegisterView({changeView}){
     // register post
     function register_request(){
         // validate password
-        if (localPasswordA == localPasswordB){
+        if (localPasswordA === localPasswordB){
             axios.post("/user", 
-                {'login_name': localUsername, 
-                    'password': localPasswordA,
-                    'first_name': localFirstName,
-                    'last_name': localLastName,
-                    'occupation': occupation,
-                    'description': description,
-                    'location': location,
+                {login_name: localUsername, 
+                    password: localPasswordA,
+                    first_name: localFirstName,
+                    last_name: localLastName,
+                    occupation: occupation,
+                    description: description,
+                    location: location,
                 }).then(
                 function(success){
                     const user = success.data;
@@ -78,26 +73,26 @@ export function RegisterView({changeView}){
         <>
             <Typography variant="h4" className="name">Register New User</Typography>
             <TextField required id="outlined-required" label="Username" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalUsername(event.target.value)}} />
+            onChange={(event) => {setLocalUsername(event.target.value);}} />
             <TextField required id="outlined-required" label="First Name" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalFirstName(event.target.value)}} />
+            onChange={(event) => {setLocalFirstName(event.target.value);}} />
             <TextField required id="outlined-required" label="Last Name" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalLastName(event.target.value)}} />
+            onChange={(event) => {setLocalLastName(event.target.value);}} />
             <TextField required id="outlined-password-input" label="Password" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalPasswordA(event.target.value)}} />
+            onChange={(event) => {setLocalPasswordA(event.target.value);}} />
             <TextField required id="outlined-password-input" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalPasswordB(event.target.value)}} />
+            onChange={(event) => {setLocalPasswordB(event.target.value);}} />
             
             <TextField required id="outlined-required" label="Location" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocation(event.target.value)}} />
+            onChange={(event) => {setLocation(event.target.value);}} />
             <TextField required id="outlined-required" label="Occupation" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalOccupation(event.target.value)}} />
+            onChange={(event) => {setLocalOccupation(event.target.value);}} />
             <TextField required id="outlined-required" label="Description" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setDescription(event.target.value)}} />
+            onChange={(event) => {setDescription(event.target.value);}} />
             <Button variant="contained" onClick={() => {register_request();}} sx={{ m: 2 }}>
                 Register
             </Button>
-            <Button variant="contained" onClick={() => {changeView(true)}} sx={{ m: 2 }}>
+            <Button variant="contained" onClick={() => {changeView(true);}} sx={{ m: 2 }}>
                 Returning user
             </Button>
         </>
@@ -126,7 +121,7 @@ export function RegisterView({changeView}){
     //       />
     //     </FormControl>
     // );    
-};
+}
 
 function LoginView({changeView}){
     const [localUsername, setLocalUsername] = useState("");
@@ -136,7 +131,7 @@ function LoginView({changeView}){
 
     // login post
     function login_request(){
-        axios.post("/admin/login", {'login_name': localUsername, 'password': localPassword}).then(
+        axios.post("/admin/login", {login_name: localUsername, password: localPassword}).then(
             function(success){
                 const user = success.data;
                 //console.log(user);
@@ -155,13 +150,13 @@ function LoginView({changeView}){
         <>
             <Typography variant="h4" className="name">Login to Continue</Typography>
             <TextField required id="outlined-required" label="Username" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalUsername(event.target.value)}} />
+            onChange={(event) => {setLocalUsername(event.target.value);}} />
             <TextField required id="outlined-password-input" label="Password" variant="outlined" sx={{ m: 2 }}
-            onChange={(event) => {setLocalPassword(event.target.value)}} />
+            onChange={(event) => {setLocalPassword(event.target.value);}} />
             <Button variant="contained" onClick={() => {login_request();}} sx={{ m: 2 }}>
                 login
             </Button>
-            <Button variant="contained" onClick={() => {changeView(false)}} sx={{ m: 2 }}>
+            <Button variant="contained" onClick={() => {changeView(false);}} sx={{ m: 2 }}>
                 Register new user
             </Button>
         </>
@@ -171,11 +166,9 @@ function LoginView({changeView}){
 function Login(){
     const [useLogin, setUseLogin] = useState(true);
     return(
-        <>
-            {useLogin? 
-            <LoginView changeView={setUseLogin} /> 
-            : <RegisterView changeView={setUseLogin} />}
-        </>
+        
+            (useLogin? <LoginView changeView={setUseLogin} /> : <RegisterView changeView={setUseLogin} />)
+        
     );
 }
 

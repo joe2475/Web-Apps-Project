@@ -1,5 +1,3 @@
-"use strict";
-
 import React, {useState, useEffect} from "react";
 import { Button, Divider, Typography } from "@mui/material";
 
