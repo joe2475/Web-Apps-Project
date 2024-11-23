@@ -46,7 +46,8 @@ function App() {
           </Grid>
           <div className="main-topbar-buffer" />
           {/*if not logged in, display only login prompt*/}
-          {username? (
+          {username? 
+          (
           <>
             <Grid item sm={3}>
               (
@@ -70,7 +71,8 @@ function App() {
                 </Routes>
                 </Paper>
             </Grid>
-          </>)
+          </>
+          )
           : <Grid item><Login /></Grid> }
         </Grid>
       </div>
