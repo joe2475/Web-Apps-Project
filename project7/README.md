@@ -1,6 +1,7 @@
 
 # Project 7
 ## Jordan Frimpter, Joseph Barsis
+## JEF180001 JTB170930
 
 ## To Run
 ```npm install --legacy-peers-dep```
@@ -13,6 +14,4 @@
 
 express-async-handler is added. We used this in class and professor recommended it over the async library. (it is better, I implemented both ways.) This has been added to package.json.
 
-I didn't implement extra credit testing in the mocha api testing. I did everything else.
-
-The photo count links to the user's photo page. This ended up being more work than it's worth but I think it's neat.
+There is one lint error that is inescapable from the design of our project due to the context object acting as a wrapper. Using useMemo does not resolve the 'issue'. We believe this to be a limitation of the lint software since it has no knowledge of our intentions to use it in this way.
