@@ -7,7 +7,7 @@ import "./styles.css";
 import {PhotoUnit} from "./display";
 
 // display component for single photo display ["advanced feature"]
-function ExpNav({user, photos, photoId}){
+function ExpNav({user, photos, photoId, setPhotos}){
   //console.log(user, photos, photoId);
   //get photo index
   function indexOfPhoto(id){
@@ -39,7 +39,7 @@ function ExpNav({user, photos, photoId}){
       :<Button variant="outlined" href={"#photos/" + user._id + "/" + photos[last]._id} sx={{ m: 2 }}>Last</Button>}
       {next < 0? <Button variant="outlined" disabled sx={{ m: 2 }}>Next</Button>
       :<Button variant="outlined" href={"#photos/" + user._id + "/" + photos[next]._id} sx={{ m: 2 }}>Next</Button>}
-      <PhotoUnit photo={photoObj} user={user} />
+      <PhotoUnit photo={photoObj} user={user} setPhotos={setPhotos}/>
     </>
   );
 }

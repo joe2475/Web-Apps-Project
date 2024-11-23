@@ -11,7 +11,7 @@ import ExpNav from "./experimentalDisplay";
 import useStateContext from "../Context";
 
 // generate experimental image view
-function CallExperimental({user, photos}){
+function CallExperimental({user, photos, setPhotos}){
   // get photo ID
   const {photoId} = useParams();
 
@@ -37,7 +37,7 @@ function CallExperimental({user, photos}){
   }
 
   //generate the experimental view
-  return( <ExpNav user={user} photos={photos} photoId={photoId}/>) ;
+  return( <ExpNav user={user} photos={photos} photoId={photoId} setPhotos={setPhotos}/>) ;
 }
 
 // user photos component
@@ -78,7 +78,7 @@ function UserPhotos({userId}) {
   if(photos === "" || user === ""){
     return(
       <div className="photoGroup">
-        <Typography variant="h3">Loading...</Typography>
+        <Typography variant="h3">No Photos Found.</Typography>
       </div>
     );
   }
