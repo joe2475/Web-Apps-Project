@@ -39,7 +39,7 @@ export function RegisterView({changeView}){
     const [occupation, setLocalOccupation] = useState("");
     const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
-
+    const [localError, setLocalError] = useState("");
 
     // register post
     function register_request(){
@@ -64,8 +64,14 @@ export function RegisterView({changeView}){
                     
                     console.log("posted login");
                 },
-                (failure) => {console.log(failure);  }
+                (failure) => {
+                    console.log(failure);  
+                    setLocalError("Login error: Invalid credentials.");
+                }
             );
+        }
+        else{
+            setLocalError("Invalid password.");
         }
     }
 
@@ -95,6 +101,7 @@ export function RegisterView({changeView}){
             <Button variant="contained" onClick={() => {changeView(true);}} sx={{ m: 2 }}>
                 Returning user
             </Button>
+            <Typography variant="h4" className="name" color="error">{localError}</Typography>
         </>
     );
 
@@ -126,6 +133,7 @@ export function RegisterView({changeView}){
 function LoginView({changeView}){
     const [localUsername, setLocalUsername] = useState("");
     const [localPassword, setLocalPassword] = useState("");
+    const [localError, setLocalError] = useState("");
 
     const {setUsername, setFirstname, setLastname, setUser_id} = useStateContext(); // get flags
 
@@ -142,7 +150,10 @@ function LoginView({changeView}){
                 
                 console.log("posted login");
             },
-            (failure) => {console.log(failure);  }
+            (failure) => {
+                console.log(failure);  
+                setLocalError("Login error: Invalid credentials.");
+            }
         );
     }
 
@@ -159,6 +170,7 @@ function LoginView({changeView}){
             <Button variant="contained" onClick={() => {changeView(false);}} sx={{ m: 2 }}>
                 Register new user
             </Button>
+            <Typography variant="h4" className="name" color="error">{localError}</Typography>
         </>
     );
 }
