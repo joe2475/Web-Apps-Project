@@ -84,9 +84,9 @@ export function RegisterView({changeView}){
             onChange={(event) => {setLocalFirstName(event.target.value);}} />
             <TextField required id="outlined-required" label="Last Name" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalLastName(event.target.value);}} />
-            <TextField required id="outlined-password-input" label="Password" variant="outlined" sx={{ m: 2 }}
+            <TextField required id="outlined-password-input" type="password" label="Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPasswordA(event.target.value);}} />
-            <TextField required id="outlined-password-input" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
+            <TextField required id="outlined-password-input" type="password" label="Re-enter Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPasswordB(event.target.value);}} />
             
             <TextField required id="outlined-required" label="Location" variant="outlined" sx={{ m: 2 }}
@@ -162,7 +162,7 @@ function LoginView({changeView}){
             <Typography variant="h4" className="name">Login to Continue</Typography>
             <TextField required id="outlined-required" label="Username" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalUsername(event.target.value);}} />
-            <TextField required id="outlined-password-input" label="Password" variant="outlined" sx={{ m: 2 }}
+            <TextField required id="outlined-password-input" type="password" label="Password" variant="outlined" sx={{ m: 2 }}
             onChange={(event) => {setLocalPassword(event.target.value);}} />
             <Button variant="contained" onClick={() => {login_request();}} sx={{ m: 2 }}>
                 login
@@ -175,7 +175,7 @@ function LoginView({changeView}){
     );
 }
 
-function Login(){
+function LoginRegister(){
     const [useLogin, setUseLogin] = useState(true);
     return(
         
@@ -184,4 +184,4 @@ function Login(){
     );
 }
 
-export default Login;
+export default LoginRegister;

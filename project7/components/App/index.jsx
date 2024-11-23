@@ -8,7 +8,7 @@ import UserList from "../UserList";
 import UserPhotos from "../UserPhotos";
 import UserComments from "../Comments";
 import useStateContext from "../Context";
-import Login from "../Login";
+import LoginRegister from "../LoginRegister";
 import PhotoUpload from "../PhotoUpload";
 //call on user detail component
 function UserDetailRoute() {
@@ -47,14 +47,11 @@ function App() {
           <div className="main-topbar-buffer" />
           {/*if not logged in, display only login prompt*/}
           {username? 
-          (
           <>
             <Grid item sm={3}>
-              (
                 <Paper className="main-grid-item">
                 <UserList/>
                 </Paper>
-              )
             </Grid>
             <Grid item sm={9}>
                 <Paper className="main-grid-item">
@@ -72,8 +69,7 @@ function App() {
                 </Paper>
             </Grid>
           </>
-          )
-          : <Grid item><Login /></Grid> }
+          : <Grid item><LoginRegister /></Grid> }
         </Grid>
       </div>
     </HashRouter>

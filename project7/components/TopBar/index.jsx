@@ -5,7 +5,7 @@ import { Route, Routes, useParams, Link } from "react-router-dom";
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
-import {Logout} from "../Login";
+import {Logout} from "../LoginRegister";
 
 // function for fetching username for display
 function getUsername(){
@@ -100,7 +100,7 @@ function TopBar() {
     <AppBar className="topbar-appBar" position="absolute">
       <Toolbar>
         <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
-          {username? firstname: "Please Log In"}
+          {username? "Hi " + firstname: "Please Log In"}
         </Typography>
         <FormGroup>
           <FormControlLabel control={<Switch checked={useAdvanced} onChange={(event)=>{setUseAdvanced(event.target.checked);}} color="secondary"/>} label="Enable Advanced Features" />

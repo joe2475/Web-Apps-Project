@@ -2,12 +2,14 @@ import React, {useState} from "react";
 import axios from "axios";
 import { Button, Input, Typography, Card} from "@mui/material";
 import useStateContext from "../Context";
+import { useNavigate } from 'react-router-dom';
 
 
 function PhotoUpload()
 {
     const [photo, setPhoto] = useState();
     const userInfo = useStateContext();
+    const navigate = useNavigate();
     const userId = userInfo.user_id;
     function handleChange(event)
     {
@@ -32,6 +34,7 @@ function PhotoUpload()
         };
         axios.post(url, data, config).then((response) => {
             console.log(response.data);
+            navigate('/photos/' + userId);
         });
     }
     else //Need to add logic for sending empty file to return a 400 respsone. Don't know why we can't just handle this on the frontend but whatever
