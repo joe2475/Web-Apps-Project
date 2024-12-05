@@ -404,9 +404,9 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
         user_id: request.session.user.userID,
       allowed: tempAcc}; 
       console.log(JSON.stringify(photoObj));
-    /*  fs.writeFile("./images/" + filename, request.file.buffer, function() {
+      fs.writeFile("./images/" + filename, request.file.buffer, function() {
         Photo.insertMany(photoObj);
-      });*/
+      });
       // return on success
       //return response.json(photoObj);
       return response.status(200).send("Photo Successfully Uploaded");
