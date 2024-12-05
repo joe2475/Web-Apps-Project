@@ -50,10 +50,17 @@ function PhotoUpload()
         users.map((u) => {
           allUsers.push(u._id);
         })
-        if ((select.length !== 0) && (accessFlg === true))
+        if ( accessFlg === true)
           {
-            selected = select;
+            if (select.length !== 0) {
+            selected = [...select, userId];
+            }
+            else 
+            {
+              selected = userId;
+            }
           }
+        
         else
         {
             selected = allUsers;
@@ -67,7 +74,7 @@ function PhotoUpload()
         data.append('filename', photo.name);
         data.append('userId',userId); 
         if (accessFlg == true){
-        data.append('accessList',[...selected, userId]);
+        data.append('accessList',[selected]);
         }
         else {
           data.append('accessList', [selected]);
