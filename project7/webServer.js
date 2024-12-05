@@ -51,6 +51,7 @@ var jsonParser = bodyParser.json();
 const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
+const { ObjectId } = require('mongodb');
 
 
 // connect to mongo
@@ -239,6 +240,9 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
 
   // validate ID
   const id = request.params.id;
+  const userId = request.session.user.userID;
+  console.log(typeof userId);
+ // console.log(typeof id);
   if (id.length !== 24){
     console.log("Invalid User " + id);
     return response.status(400).send("Invalid User"); // Send the error as JSON
@@ -246,12 +250,12 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
 
   //fetch info
   Promise.all([
-    Photo.find({user_id: id}, "_id user_id comments.comment comments.date_time comments._id comments.user_id file_name date_time").exec(),
+    Photo.find({$and: [{user_id: id}, {allowed: new mongoose.Types.ObjectId(userId) }]}, "_id user_id comments.comment comments.date_time comments._id comments.user_id file_name date_time").exec(),
     User.find({},"_id first_name last_name").exec()
   ]).then((result) => {
     const users = result[1];
     const info = result[0];
-
+   // console.log(JSON.stringify(result[0]));
     // validate informations
     if (users.length === 0) {
           // None found - return 500 error
@@ -259,6 +263,7 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
     }
     if (info.length === 0) {
           // None found - return 500 error
+          console.log("No photos");
           return response.status(500).send("Missing UserPhotos");
     }
 
@@ -380,8 +385,15 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
       {
         return new Error("No File Uploaded");
       }
-      console.log("Photo upload2");
-
+      //const objectIdArray = stringObjectIdArray.map(s => new mongoose.Types.ObjectId(s));
+      console.log(typeof request.body.accessList);
+      const access = request.body.accessList.split(',');
+      const tempAcc = [];
+     access.forEach(function(ac)  {
+        tempAcc.push(new mongoose.Types.ObjectId(ac));
+      });
+      console.log(`Access : ${access}`);
+      console.log(`Object Access:  ${tempAcc}`);
       //console.log(request.file)
       //console.log(request.body.userId);
       const timestamp = new Date().valueOf();
@@ -389,12 +401,12 @@ app.post("/photos/new", isLoggedIn, asyncHandler(async function (request, respon
       const filename = 'U' +  String(timestamp) + tempFileName.replaceAll(" ","");
       const photoObj = {
         file_name: filename, 
-        user_id: request.session.user.userID}; 
+        user_id: request.session.user.userID,
+      allowed: tempAcc}; 
       console.log(JSON.stringify(photoObj));
-      //console.log(filename); 
-      fs.writeFile("./images/" + filename, request.file.buffer, function() {
+    /*  fs.writeFile("./images/" + filename, request.file.buffer, function() {
         Photo.insertMany(photoObj);
-      });
+      });*/
       // return on success
       //return response.json(photoObj);
       return response.status(200).send("Photo Successfully Uploaded");

@@ -88,6 +88,8 @@ Promise.all(removePromises)
           file_name: photo.file_name,
           date_time: photo.date_time,
           user_id: mapFakeId2RealId[photo.user_id],
+   
+       //   allowed: mapFakeId2RealId[photo.allowed]
         })
           .then(function (photoObj) {
             photo.objectID = photoObj._id;
@@ -107,6 +109,11 @@ Promise.all(removePromises)
                   photo.file_name
                 );
               });
+            }
+            if (photo.allowed) {
+              photo.allowed.forEach(function (allow) {
+                photoObj.allowed = photoObj.allowed.concat(mapFakeId2RealId[allow])
+              })
             }
             photoObj.save();
             console.log(
