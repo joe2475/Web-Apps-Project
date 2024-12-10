@@ -39,8 +39,8 @@ export function PhotoUnit({photo, user, setPhotos}){
   const [com, setCom] = useState("");
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
-  const [like, setLike] = useState(false);
-  const [num, setNum] = useState(0);
+  const [like, setLike] = useState(photo.userLiked);
+  const [num, setNum] = useState(photo.likes);
   var didMount = useRef(false);
 
   console.log(photo);

@@ -254,7 +254,7 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
   Promise.all([
     Photo.find({$and: [{user_id: id}, {allowed: new mongoose.Types.ObjectId(userId) }]}, "_id user_id comments.comment comments.date_time comments._id comments.user_id file_name date_time").exec(),
     User.find({},"_id first_name last_name").exec()
-  ]).then((result) => {
+  ]).then(async (result) => {
     const users = result[1];
     const info = result[0];
    // console.log(JSON.stringify(result[0]));
@@ -283,16 +283,23 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
         userLiked: false,
       };
 
+      
       // generate likes
+      const templikes = await UserLike.find({photo_id: photo._id}).exec();
+      const tempuserLiked = await UserLike.find({user_id: userId, photo_id: photo._id}).exec();
+      photo.likes = templikes.length;
+      photo.userLiked = tempuserLiked.length > 0;
+      /*
       Promise.all([
-        UserLike.find({},"_id").exec(),
-        UserLike.find({},"_id first_name last_name").exec()
+        UserLike.find({photo_id: photo._id}).exec(),
+        UserLike.find({user_id: userId, photo_id: photo._id}).exec()
       ]).then((result) => {
         likes = result[0];
         liked = result[1];
         photo.likes = likes.length;
         photo.userLiked = liked.length > 0;
-      });
+        console.log(likes, ", ", liked);
+      }).catch (err => {console.log(err);});*/
 
       // generate comments
       for (let j = 0; j < info[i].comments.length; j++){
