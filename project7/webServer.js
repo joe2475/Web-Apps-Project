@@ -51,6 +51,7 @@ var jsonParser = bodyParser.json();
 const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
+const UserLike = require("./schema/like.js");
 const { ObjectId } = require('mongodb');
 
 
@@ -141,6 +142,7 @@ const collections = [
   { name: "user", collection: User },
   { name: "photo", collection: Photo },
   { name: "schemaInfo", collection: SchemaInfo },
+  { name: "userlike", collection: UserLike},
 ];
 
 try {
@@ -276,7 +278,21 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
         user_id: info[i].user_id,
         file_name: info[i].file_name,
         date_time: info[i].date_time,
-        comments: []};
+        comments: [],
+        likes: 0,
+        userLiked: false,
+      };
+
+      // generate likes
+      Promise.all([
+        UserLike.find({},"_id").exec(),
+        UserLike.find({},"_id first_name last_name").exec()
+      ]).then((result) => {
+        likes = result[0];
+        liked = result[1];
+        photo.likes = likes.length;
+        photo.userLiked = liked.length > 0;
+      });
 
       // generate comments
       for (let j = 0; j < info[i].comments.length; j++){
@@ -671,6 +687,78 @@ app.post("/user", express.urlencoded({ extended: false }),
     return response.status(400).json(err); // Send the error as JSON
   }
 });
+
+// like status
+app.post("/likePhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async function (request, response) {
+  try{
+  const id = request.params.photo_id; 
+  const status = request.body.status; 
+
+  // get userID
+  const userId = request.session.user.userID;
+
+  // log output
+  console.log(status);
+  console.log(typeof status);
+  console.log(id);
+  console.log(userId);
+
+  // validate arguments
+  if(id === undefined || status === undefined || userId === undefined){
+    return response.status(400).send("Invalid arguments");
+  }
+
+  // attempt any tetrieval
+  const ooo = await UserLike.find({});
+  console.log("All:" + ooo);
+
+  // attempt retrieval
+  const likeObject = await UserLike.find({user_id: userId, photo_id: id},"user_id photo_id");
+  console.log(likeObject);
+  // if request to like
+  if (status === true){
+    // like request
+    console.log("request placed to like");
+    // if liked and not present, like
+    if (likeObject.length === 0){
+
+      // insert object
+      const obj = {user_id: userId, photo_id: id};
+      const result = await UserLike.create(obj);
+      console.log("result:" + result);
+      return response.send("Succeeded Add Like");
+    }
+    else{
+      return response.status(400).send("Cannot like: like already present");
+    }
+  }
+
+  // status equals false (request to dislike)
+  else if (status === false){
+    // like request
+    console.log("request placed to unlike");
+    // if disliked and currently like, remove like
+    if (likeObject){
+      // remove like
+      const result = await UserLike.deleteOne({user_id: userId, photo_id: id});
+      console.log("result:" + result);
+      return response.send("Succeeded Remove Like");
+    }
+    else{
+      console.log("Cannot unlike: no comment to remove");
+      return response.status(400).send("Cannot unlike: like already absent");
+    }
+  }
+  // status is unreadable
+  else{return response.status(400).send("Invalid arguments");
+    
+  }
+}
+  catch(err){
+    return response.status(400).json(err); // Send the error as JSON
+  }
+}));
+
 
 // request.session.name = "SESSION_TEST";
 // request.send("test 1");
