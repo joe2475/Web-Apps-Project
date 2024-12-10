@@ -331,6 +331,15 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
       obj.push(photo);
     }
 
+    // sort by likes and then by date
+    obj.sort((a, b) => {
+      // date if likes are same
+      if (a.likes == b.likes){
+        return b.date_time - a.date_time;
+      }
+      return b.likes - a.likes;
+    })
+
     //console.log("/photosOfUser/"+id, obj);
     return response.json(obj); // Use `json()` to send JSON responses
   });
