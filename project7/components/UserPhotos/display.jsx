@@ -4,7 +4,7 @@ import { Typography,
   Button,
   TextField,
 } from "@mui/material";
-
+import useStateContext from "../Context";
 import "./styles.css";
 import axios from "axios";
 // display components for UserPhotos Component
@@ -19,6 +19,9 @@ export function FormatDatetime({input}){
 
 // component for comment display
 export function CommentUnit({comment}){
+  const userInfo = useStateContext();
+  const userId = userInfo.user_id;
+
   return(
     <Card key={comment._id} className="commentCard">
       <Typography variant="body1" className="commentTitle">
@@ -28,6 +31,7 @@ export function CommentUnit({comment}){
       <Typography>
         {comment.comment}
       </Typography>
+      {comment.user._id === userId ? <Button >Delete</Button>  : console.log("")}
     </Card>
   );
 }
@@ -39,6 +43,8 @@ export function PhotoUnit({photo, user, setPhotos}){
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
   var didMount = useRef(false);
+  const userInfo = useStateContext();
+  const userId = userInfo.user_id;
   function handleOnChange(event)
   {
     event.preventDefault();
@@ -83,6 +89,7 @@ function handleOnSubmit(event, photoId)
   <div key={photo._id} className="photo">
     <img src={"/images/" + photo.file_name} alt={"User Sumbitted Content"} className="photoImage"/>
     <br />
+    {photo.user_id === userId ? <Button>Delete</Button> : console.log("")}
     <Typography variant="caption">
       {user === "" ? "Loading User..." : ( 
       <>
@@ -90,7 +97,7 @@ function handleOnSubmit(event, photoId)
       </>
       )}
     </Typography>
-    {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} />) : <br />}
+    {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem}  key={elem._id} />) : <br />}
   </div>
   <div>
   <TextField fullWidth label="comment" id="comment" value={com} onChange={(e) => {handleOnChange(e);}}/>

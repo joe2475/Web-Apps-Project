@@ -112,7 +112,7 @@ function PhotoUpload()
         variant="contained" color="primary">
             Submit 
         </Button>
-        <Typography>Set Photo Permissions (Leave blank to allow all users)</Typography>
+        <Typography>Set Photo Permissions (Leave blank to allow only current user)</Typography>
         <Checkbox  onChange={(event) => event.target.checked ? setAccessFlg(true) :  setAccessFlg(false)} label='access'></Checkbox> 
         {console.log(accessFlg)}
         {accessFlg == true ? 
