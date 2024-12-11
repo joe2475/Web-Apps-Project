@@ -26,6 +26,7 @@ const models = require("./modelData/photoApp.js").models;
 const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
+const UserLike = require("./schema/like.js");
 
 const versionString = "1.0";
 
@@ -34,6 +35,7 @@ const removePromises = [
   User.deleteMany({}),
   Photo.deleteMany({}),
   SchemaInfo.deleteMany({}),
+  UserLike.deleteMany({}),
 ];
 
 Promise.all(removePromises)
@@ -127,7 +129,25 @@ Promise.all(removePromises)
             console.error("Error create user", err);
           });
       });
-      return Promise.all(photoPromises).then(function () {
+
+      // const for schema
+      const likes = Promise.all(photoPromises).then(function () {
+        // Create the userlike object
+        return UserLike.create({
+          user_id: null,
+          photo_id: null,
+        })
+          .then(function (userInfo) {
+            console.log(
+              "UserInfo object created"
+            );
+          })
+          .catch(function (err) {
+            console.error("Error create UserInfo", err);
+          });
+      });
+
+      return Promise.all([likes]).then(function () {
         // Create the SchemaInfo object
         return SchemaInfo.create({
           version: versionString,

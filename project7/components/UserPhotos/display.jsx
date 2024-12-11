@@ -3,6 +3,7 @@ import { Typography,
   Card,
   Button,
   TextField,
+  Grid,
 } from "@mui/material";
 import useStateContext from "../Context";
 import "./styles.css";
@@ -42,7 +43,32 @@ export function PhotoUnit({photo, user, setPhotos}){
   const [com, setCom] = useState("");
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
+  const [like, setLike] = useState(photo.userLiked);
+  const [num, setNum] = useState(photo.likes);
   var didMount = useRef(false);
+
+  console.log(photo);
+
+  // like post
+  function likePhoto(){
+    console.log("New like status: " + !like);
+    axios.post("/likePhoto/"+photo._id, {status: !like}).then(
+        (success) => {            
+            console.log("Like Photo requested");
+            if(like){
+              setNum(num - 1);
+            }
+            else{
+              setNum(num + 1);
+            }
+            setLike(!like);
+        },
+        (failure) => {
+            console.log(failure);  
+        }
+    );
+  }
+
   const userInfo = useStateContext();
   const userId = userInfo.user_id;
   function handleOnChange(event)
@@ -97,7 +123,20 @@ function handleOnSubmit(event, photoId)
       </>
       )}
     </Typography>
-    {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem}  key={elem._id} />) : <br />}
+    
+    <Grid container spacing={2}>
+      <Grid item>
+        <Typography variant="h5" color="secondary">
+          {num} Likes
+        </Typography>
+      </Grid>
+      <Grid item>
+        {like? 
+        <Button variant="contained" onClick={likePhoto}>👍</Button>:
+        <Button variant="outlined" onClick={likePhoto}>👍</Button>}
+      </Grid>
+    </Grid>
+    {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} />) : <br />}
   </div>
   <div>
   <TextField fullWidth label="comment" id="comment" value={com} onChange={(e) => {handleOnChange(e);}}/>
