@@ -5,12 +5,16 @@ import { Typography,
   TextField,
   Grid,
 } from "@mui/material";
-
-import "./styles.css";
 import axios from "axios";
+import useStateContext from "../Context";
+import "./styles.css";
+
 // display components for UserPhotos Component
 // separated to different file for clarity
 // format datetime for display
+
+
+
 export function FormatDatetime({input}){
   const dat = new Date(input);
   const op = {month: "long", day: "numeric", year:"numeric"};
@@ -19,7 +23,17 @@ export function FormatDatetime({input}){
 }
 
 // component for comment display
-export function CommentUnit({comment}){
+export function CommentUnit({comment, setDelete, setComId, setPhId, pID, setPhotoFlag}){
+  const userInfo = useStateContext();
+  const userId = userInfo.user_id;
+function handleDelete(event, commentId)
+{
+  event.preventDefault();
+  setComId(commentId);
+  setPhId(pID);
+  setPhotoFlag(false);
+  setDelete(commentId);
+}
   return(
     <Card key={comment._id} className="commentCard">
       <Typography variant="body1" className="commentTitle">
@@ -29,6 +43,7 @@ export function CommentUnit({comment}){
       <Typography>
         {comment.comment}
       </Typography>
+      {comment.user._id === userId ? <Button onClick={((e) => {handleDelete(e, comment._id);})}>Delete</Button>  : console.log("")}
     </Card>
   );
 }
@@ -37,20 +52,22 @@ export function CommentUnit({comment}){
 // component for photo display, with photo, metadata, and comments
 export function PhotoUnit({photo, user, setPhotos}){
   const [com, setCom] = useState("");
+  const [del, setDelete] = useState("");
+  const [photoFlag, setPhotoFlag] = useState(false);
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
   const [like, setLike] = useState(photo.userLiked);
   const [favorite, setFavorite] = useState(photo.favorite);
   const [num, setNum] = useState(photo.likes);
+  const [comId, setComId] = useState("");
   var didMount = useRef(false);
 
-  console.log(photo);
 
   // like post
   function likePhoto(){
     console.log("New like status: " + !like);
     axios.post("/likePhoto/"+photo._id, {status: !like}).then(
-        (success) => {            
+        () => {            
             console.log("Like Photo requested");
             if(like){
               setNum(num - 1);
@@ -71,7 +88,7 @@ export function PhotoUnit({photo, user, setPhotos}){
     setFavorite(true);
     console.log("New favorite status: " + true);
     axios.post("/favoritePhoto/"+photo._id, {status: true}).then(
-        (success) => {            
+        () => {            
             console.log("Favorite Photo requested");
         },
         (failure) => {
@@ -80,11 +97,42 @@ export function PhotoUnit({photo, user, setPhotos}){
     );
   }  
 
+  const userInfo = useStateContext();
+  const userId = userInfo.user_id;
   function handleOnChange(event)
   {
     event.preventDefault();
     setCom(event.target.value);
   }
+
+  useEffect(() => {
+    if (didMount.current)
+      { 
+        var dat;
+      const deleteMedia = async data => {
+        await axios.delete(`/deletePhoto/${phId}`, {data:data}).then(() => {
+            setPhotoFlag(false);
+          });
+      };
+        if (photoFlag){
+          dat = {comId:'NA'};
+          console.log("made it to photo flag");
+       }
+
+       else {
+        dat = {comId:comId};
+        console.log("Made it to comment flag");
+       }
+
+      deleteMedia(dat);
+      axios.get(`/photosOfUser/${user._id}`).then((result) => {
+        console.log(result.data);
+        setPhotos(result.data);
+      });   
+      }
+
+      didMount.current = true;
+  },[del]);
   useEffect(()=>{
     if (didMount.current)
     { 
@@ -102,11 +150,18 @@ export function PhotoUnit({photo, user, setPhotos}){
         axios.get(`/photosOfUser/${user._id}`).then((result) => {
           setCom("");
           setPhotos(result.data);
-        });
-        
+        });   
     }
     didMount.current = true;
   },[addCom]);
+
+ function handleDelete(event, photoId)
+ {
+ event.preventDefault();
+  setPhId(photoId);
+  setPhotoFlag(true);
+  setDelete(photoId);
+ } 
 function handleOnSubmit(event, photoId)
 {
   event.preventDefault();
@@ -124,6 +179,7 @@ function handleOnSubmit(event, photoId)
   <div key={photo._id} className="photo">
     <img src={"/images/" + photo.file_name} alt={"User Sumbitted Content"} className="photoImage"/>
     <br />
+    {photo.user_id === userId ? <Button onClick={(e) => {handleDelete(e, photo._id);}}> Delete</Button> : console.log("")}
     <Typography variant="caption">
       {user === "" ? "Loading User..." : ( 
       <>
@@ -149,7 +205,7 @@ function handleOnSubmit(event, photoId)
         <Button variant="outlined" onClick={favoritePhoto}>⭐</Button>}
       </Grid>
     </Grid>
-    {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} />) : <br />}
+    {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} setDelete={setDelete} setComId={setComId} setPhId={setPhId} pID = {photo._id} setPhotoFlag={setPhotoFlag}/>) : <br />}
   </div>
   <div>
   <TextField fullWidth label="comment" id="comment" value={com} onChange={(e) => {handleOnChange(e);}}/>

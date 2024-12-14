@@ -10,9 +10,9 @@ import UserComments from "../Comments";
 import useStateContext from "../Context";
 import LoginRegister from "../LoginRegister";
 import PhotoUpload from "../PhotoUpload";
-import UserFavorite from "../../schema/favorite";
 import UserFavorites from "../Favorites";
 
+import DeleteAcct from "../DeleteAcct";
 //call on user detail component
 function UserDetailRoute() {
   const {userId} = useParams();
@@ -65,6 +65,7 @@ function App() {
                     <Route path="/photos/:userId/*" element={<UserPhotosRoute  />} />
                     <Route path="/users" element={(<UserList/>)} />
                     <Route path="/photo/upload" element={<PhotoUpload/>}></Route>
+                    <Route path="/user/delete_acct" element={<DeleteAcct/>}></Route>
                     <Route
                     path="/"
                     element={<Button href="#users">Navigate to Users</Button>}

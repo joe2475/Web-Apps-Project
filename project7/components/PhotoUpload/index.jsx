@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import { Button, Input, Typography, Card, Grid} from "@mui/material";
+import { Button, Input, Typography, Card, Select, MenuItem, Checkbox} from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import useStateContext from "../Context";
-import {Select} from "@mui/material";
-import {MenuItem} from "@mui/material";
-import {Checkbox} from "@mui/material";
 
 function PhotoUpload()
 {
@@ -27,7 +24,7 @@ function PhotoUpload()
           setUsers({});
         },
       );
-   }, [])
+   }, []);
     function handleMultiple(event)
     {
         const {
@@ -47,9 +44,9 @@ function PhotoUpload()
         event.preventDefault();
         var selected; 
         console.log(select.length);
-        users.map((u) => {
+        users.forEach((u) => {
           allUsers.push(u._id);
-        })
+        });
         if ( accessFlg === true)
           {
             if (select.length !== 0) {
@@ -73,7 +70,7 @@ function PhotoUpload()
         data.append('uploadedphoto',photo); 
         data.append('filename', photo.name);
         data.append('userId',userId); 
-        if (accessFlg == true){
+        if (accessFlg === true){
         data.append('accessList',[selected]);
         }
         else {
@@ -112,11 +109,12 @@ function PhotoUpload()
         variant="contained" color="primary">
             Submit 
         </Button>
-        <Typography>Set Photo Permissions (Leave blank to allow all users)</Typography>
-        <Checkbox  onChange={(event) => event.target.checked ? setAccessFlg(true) :  setAccessFlg(false)} label='access'></Checkbox> 
+        <Typography>Set Photo Permissions (Leave blank to allow only current user)</Typography>
+        <Checkbox onChange={(event) => (event.target.checked ? setAccessFlg(true) :  setAccessFlg(false))} label='access'></Checkbox> 
         {console.log(accessFlg)}
-        {accessFlg == true ? 
-        <Select 
+        {accessFlg === true ? 
+       ( 
+      <Select 
           multiple
           value={select}
           onChange={handleMultiple}>
@@ -125,9 +123,9 @@ function PhotoUpload()
                         {u._id !== userId ?  `${u.first_name}  ${u.last_name}` : ""}
                      </MenuItem>
                   )) :< MenuItem value='Null'>--</MenuItem> }
-        </Select>
-        : console.log("No access")
-}
+      </Select>
+        )
+        : console.log("No access")}
       </Card>
     </>
     );

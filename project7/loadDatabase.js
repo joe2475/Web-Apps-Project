@@ -116,8 +116,8 @@ Promise.all(removePromises)
             }
             if (photo.allowed) {
               photo.allowed.forEach(function (allow) {
-                photoObj.allowed = photoObj.allowed.concat(mapFakeId2RealId[allow])
-              })
+                photoObj.allowed = photoObj.allowed.concat(mapFakeId2RealId[allow]);
+              });
             }
             photoObj.save();
             console.log(
@@ -139,7 +139,7 @@ Promise.all(removePromises)
           user_id: null,
           photo_id: null,
         })
-          .then(function (userInfo) {
+          .then(function () {
             console.log(
               "UserInfo object created"
             );
