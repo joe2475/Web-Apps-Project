@@ -10,6 +10,9 @@ import UserComments from "../Comments";
 import useStateContext from "../Context";
 import LoginRegister from "../LoginRegister";
 import PhotoUpload from "../PhotoUpload";
+import UserFavorite from "../../schema/favorite";
+import UserFavorites from "../Favorites";
+
 //call on user detail component
 function UserDetailRoute() {
   const {userId} = useParams();
@@ -58,6 +61,7 @@ function App() {
                 <Routes>
                     <Route path="/users/:userId" element={<UserDetailRoute />} />
                     <Route path="/comments/:userId" element={<CommentsRoute/>} />
+                    <Route path="/favorites" element={<UserFavorites/>} />
                     <Route path="/photos/:userId/*" element={<UserPhotosRoute  />} />
                     <Route path="/users" element={(<UserList/>)} />
                     <Route path="/photo/upload" element={<PhotoUpload/>}></Route>

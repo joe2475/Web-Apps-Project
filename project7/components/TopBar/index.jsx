@@ -105,6 +105,9 @@ function TopBar() {
         <FormGroup>
           <FormControlLabel control={<Switch checked={useAdvanced} onChange={(event)=>{setUseAdvanced(event.target.checked);}} color="secondary"/>} label="Enable Advanced Features" />
         </FormGroup>  
+        <Typography>
+          {username? <Button component={Link} to='/favorites' variant="contained" color="secondary">Favorites</Button> : ""}
+        </Typography>
         <Typography variant="h5" color="inherit">
           {getText()}
         </Typography>

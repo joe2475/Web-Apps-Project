@@ -27,6 +27,7 @@ const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
 const UserLike = require("./schema/like.js");
+const UserFavorite = require("./schema/favorite.js");
 
 const versionString = "1.0";
 
@@ -36,6 +37,7 @@ const removePromises = [
   Photo.deleteMany({}),
   SchemaInfo.deleteMany({}),
   UserLike.deleteMany({}),
+  UserFavorite.deleteMany({}),
 ];
 
 Promise.all(removePromises)
