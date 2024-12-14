@@ -5,9 +5,10 @@ import { Typography,
   TextField,
   Grid,
 } from "@mui/material";
+import axios from "axios";
 import useStateContext from "../Context";
 import "./styles.css";
-import axios from "axios";
+
 // display components for UserPhotos Component
 // separated to different file for clarity
 // format datetime for display
@@ -42,7 +43,7 @@ function handleDelete(event, commentId)
       <Typography>
         {comment.comment}
       </Typography>
-      {comment.user._id === userId ? <Button onClick={((e) => {handleDelete(e, comment._id)})}>Delete</Button>  : console.log("")}
+      {comment.user._id === userId ? <Button onClick={((e) => {handleDelete(e, comment._id);})}>Delete</Button>  : console.log("")}
     </Card>
   );
 }
@@ -66,7 +67,7 @@ export function PhotoUnit({photo, user, setPhotos}){
   function likePhoto(){
     console.log("New like status: " + !like);
     axios.post("/likePhoto/"+photo._id, {status: !like}).then(
-        (success) => {            
+        () => {            
             console.log("Like Photo requested");
             if(like){
               setNum(num - 1);
@@ -87,7 +88,7 @@ export function PhotoUnit({photo, user, setPhotos}){
     setFavorite(true);
     console.log("New favorite status: " + true);
     axios.post("/favoritePhoto/"+photo._id, {status: true}).then(
-        (success) => {            
+        () => {            
             console.log("Favorite Photo requested");
         },
         (failure) => {
@@ -109,18 +110,18 @@ export function PhotoUnit({photo, user, setPhotos}){
       { 
         var dat;
       const deleteMedia = async data => {
-        await axios.delete(`/deletePhoto/${phId}`, {data:data}).then((response) => {
+        await axios.delete(`/deletePhoto/${phId}`, {data:data}).then(() => {
             setPhotoFlag(false);
-          })
-      }
+          });
+      };
         if (photoFlag){
           dat = {comId:'NA'};
-          console.log("made it to photo flag")
+          console.log("made it to photo flag");
        }
 
        else {
         dat = {comId:comId};
-        console.log("Made it to comment flag")
+        console.log("Made it to comment flag");
        }
 
       deleteMedia(dat);
@@ -131,7 +132,7 @@ export function PhotoUnit({photo, user, setPhotos}){
       }
 
       didMount.current = true;
-  },[del])
+  },[del]);
   useEffect(()=>{
     if (didMount.current)
     { 
@@ -178,7 +179,7 @@ function handleOnSubmit(event, photoId)
   <div key={photo._id} className="photo">
     <img src={"/images/" + photo.file_name} alt={"User Sumbitted Content"} className="photoImage"/>
     <br />
-    {photo.user_id === userId ? <Button onClick={(e) => {handleDelete(e, photo._id)}}> Delete</Button> : console.log("")}
+    {photo.user_id === userId ? <Button onClick={(e) => {handleDelete(e, photo._id);}}> Delete</Button> : console.log("")}
     <Typography variant="caption">
       {user === "" ? "Loading User..." : ( 
       <>

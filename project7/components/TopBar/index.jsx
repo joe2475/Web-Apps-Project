@@ -6,7 +6,7 @@ import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
 import {Logout} from "../LoginRegister";
-import {DeleteAcct} from "../DeleteAcct";
+
 
 // function for fetching username for display
 function getUsername(){

@@ -4,19 +4,27 @@ import {
   CardMedia,
   Grid,
   CardActionArea,
+  Button
 } from "@mui/material";
 import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
-
 // user comment list component
 function UserFavorites() {
 
-  const {username} = useStateContext(); // get flags
+  const {username, user_id} = useStateContext(); // get flags
 
   // user model
   const [model, setModel] = useState([]);
+  const [delFavFlag, setDelFavFlag] = useState("");
+  const [phId, setphId] = useState("");
 
+
+  function handleDelete(event, pId)
+  {
+    event.preventDefault();
+    setphId(pId);
+  }
   // fetch data
   useEffect(()=>{
     axios.get("/favorites").then(
@@ -28,12 +36,24 @@ function UserFavorites() {
         setModel({});
       }
     );
-  },[username]);
+  },[username, delFavFlag]);
+
+  useEffect(()=>{
+    const data = {phID: phId};
+    axios.delete(`/deleteFave/${user_id}`, {data:data}).then((response) => {
+      console.log(response);
+      setDelFavFlag(phId);
+    },
+      (failure) => {
+        console.log(failure);
+      }
+    );
+  },[phId]);
 
   // content display
   // displays a list of favorite cards from fetched data
   return (
-    <div>
+  <div>
       {model.map( (item, key) => {
         return (
           <div key={key}>
@@ -49,12 +69,12 @@ function UserFavorites() {
                     />
                   </Grid>
                 </Grid>
+                {<Button onClick={(e) => {handleDelete(e, item.photo_id);}}> Remove Favorite</Button>}
               </CardActionArea>
             </Card>
           </div>
         );
-      })
-    }
+      })}
   </div>
   );
 }

@@ -53,7 +53,6 @@ const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
 const UserLike = require("./schema/like.js");
 const UserFavorite = require("./schema/favorite.js");
-const { ObjectId } = require('mongodb');
 
 
 // connect to mongo
@@ -339,11 +338,11 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
     // sort by likes and then by date
     obj.sort((a, b) => {
       // date if likes are same
-      if (a.likes == b.likes){
+      if (a.likes === b.likes){
         return b.date_time - a.date_time;
       }
       return b.likes - a.likes;
-    })
+    });
 
     //console.log("/photosOfUser/"+id, obj);
     return response.json(obj); // Use `json()` to send JSON responses
@@ -800,7 +799,7 @@ app.get("/favorites", isLoggedIn, asyncHandler(async function (request, response
       let userObject = {
         photo_id: userFavorite[i].photo_id,
         file_name: "",
-      }
+      };
       console.log(userObject);
       // get photo file name
       const photo = await Photo.find({_id: userObject.photo_id}, "file_name").exec();
@@ -896,18 +895,14 @@ if  (id === undefined || commentId === undefined){
 }
 if (commentId === 'NA')
 {
-  const result = await Photo.deleteOne({_id:id});
+  await Photo.deleteOne({_id:id});
   return response.status(200).send("Photo Deleted");
 }
 else
 {
-  const result = await Photo.updateMany({_id:id}, {$pull: { 'comments' : { _id : commentId}}});
+ await Photo.updateMany({_id:id}, {$pull: { comments : { _id : commentId}}});
   return response.status(200).send("Comment Deleted");
-}
-//const result = await Photo.deleteOne({_id:id});
-//console.log(result);
-console.log(`ID : ${id}`);
-}));
+}}));
 
 app.delete("/deleteAccount/:id", asyncHandler(async function(request, response) {
 const id = request.params.id;
@@ -915,16 +910,27 @@ if  (id === undefined){
   return response.status(400).send("Invalid arguments");
 }
 console.log(id);
-const results = await Photo.deleteMany({user_id:id});
 Promise.all([
   Photo.deleteMany({user_id:id}).exec(),
-  Photo.updateMany({$pull: {'comments': {user_id: id}}}).exec(),
+  UserFavorite.deleteMany({user_id:id}).exec(),
+  Photo.updateMany({$pull: {comments: {user_id: id}}}).exec(),
   User.deleteOne({_id:id}).exec()
 ]).then((result) => {
-console.log(result[0])
+console.log(result[0]);
 });
 return response.status(200).send("Account Deleted");
 }));
+
+app.delete("/deleteFave/:id", jsonParser, asyncHandler(async function(request, response) {
+  const id = request.params.id;
+  const photo = request.body.phID;
+  if  (id === undefined){
+    return response.status(400).send("Invalid arguments");
+  }
+  console.log(id);
+  await UserFavorite.deleteOne({$and: [{user_id:id}, {photo_id: photo}]});
+  return response.status(200).send("Favorite Deleted");
+  }));
 
 // request.session.name = "SESSION_TEST";
 // request.send("test 1");

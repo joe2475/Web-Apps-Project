@@ -10,7 +10,6 @@ import UserComments from "../Comments";
 import useStateContext from "../Context";
 import LoginRegister from "../LoginRegister";
 import PhotoUpload from "../PhotoUpload";
-import UserFavorite from "../../schema/favorite";
 import UserFavorites from "../Favorites";
 
 import DeleteAcct from "../DeleteAcct";
