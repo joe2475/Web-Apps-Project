@@ -18,6 +18,7 @@ function UserFavorites() {
   const [model, setModel] = useState([]);
   const [delFavFlag, setDelFavFlag] = useState("");
   const [phId, setphId] = useState("");
+  const [flagEffect, setFlagEffect] = useState(false);
 
 
   function handleDelete(event, pId)
@@ -36,7 +37,7 @@ function UserFavorites() {
         setModel({});
       }
     );
-  },[username, delFavFlag]);
+  },[username, delFavFlag, flagEffect]);
 
   useEffect(()=>{
     const data = {phID: phId};
@@ -50,6 +51,30 @@ function UserFavorites() {
     );
   },[phId]);
 
+  // favorite post
+  function unfavoritePhoto(photo_id){
+    console.log("New favorite status: " + false);
+    axios.post("/favoritePhoto/"+photo_id, {status: false}).then(
+        (success) => {            
+            console.log("Unfavorite Photo requested");
+            setFlagEffect(!flagEffect);
+        },
+        (failure) => {
+            console.log(failure);  
+        }
+    );
+  }
+
+  // modal element
+  const [open, setOpen] = useState(false);
+  const [file, setFile] = useState('');
+
+  // set modal details
+  function openModal(filename){
+    setFile(filename);
+    setOpen(true);
+  }
+
   // content display
   // displays a list of favorite cards from fetched data
   return (
@@ -58,9 +83,9 @@ function UserFavorites() {
         return (
           <div key={key}>
             <Card sx={{ m: 2 }}>
-              <CardActionArea>
+              <CardActionArea onClick={() => openModal(item.file_name)}>
                 <Grid container spacing={2}>
-                  <Grid item sm={3}>
+                  <Grid item>
                     <CardMedia
                       component="img"
                       sx={{ height: 100 }}
@@ -72,6 +97,7 @@ function UserFavorites() {
                 {<Button onClick={(e) => {handleDelete(e, item.photo_id);}}> Remove Favorite</Button>}
               </CardActionArea>
             </Card>
+            <Button variant="contained" onClick={() => unfavoritePhoto(item.photo_id)}>⭐</Button>
           </div>
         );
       })}
