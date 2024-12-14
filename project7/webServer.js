@@ -266,7 +266,7 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
     if (info.length === 0) {
           // None found - return 500 error
           console.log("No photos");
-          return response.status(500).send("Missing UserPhotos");
+          return response.status(200).send(undefined);
     }
 
     // gigachad brute force transformation 
@@ -775,6 +775,43 @@ app.post("/likePhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async func
   }
 }));
 
+app.delete("/deletePhoto/:id", jsonParser, asyncHandler(async function(request,response) {
+const id = request.params.id; 
+const commentId = request.body.comId;
+if  (id === undefined || commentId === undefined){
+  return response.status(400).send("Invalid arguments");
+}
+if (commentId === 'NA')
+{
+  const result = await Photo.deleteOne({_id:id});
+  return response.status(200).send("Photo Deleted");
+}
+else
+{
+  const result = await Photo.updateMany({_id:id}, {$pull: { 'comments' : { _id : commentId}}});
+  return response.status(200).send("Comment Deleted");
+}
+//const result = await Photo.deleteOne({_id:id});
+//console.log(result);
+console.log(`ID : ${id}`);
+}));
+
+app.delete("/deleteAccount/:id", asyncHandler(async function(request, response) {
+const id = request.params.id;
+if  (id === undefined){
+  return response.status(400).send("Invalid arguments");
+}
+console.log(id);
+const results = await Photo.deleteMany({user_id:id});
+Promise.all([
+  Photo.deleteMany({user_id:id}).exec(),
+  Photo.updateMany({$pull: {'comments': {user_id: id}}}).exec(),
+  User.deleteOne({_id:id}).exec()
+]).then((result) => {
+console.log(result[0])
+});
+return response.status(200).send("Account Deleted");
+}));
 
 // request.session.name = "SESSION_TEST";
 // request.send("test 1");

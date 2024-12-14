@@ -6,6 +6,7 @@ import "./styles.css";
 import axios from "axios";
 import useStateContext from "../Context";
 import {Logout} from "../LoginRegister";
+import {DeleteAcct} from "../DeleteAcct";
 
 // function for fetching username for display
 function getUsername(){
@@ -110,6 +111,7 @@ function TopBar() {
         </Typography>
           {username? <Button component={Link} to='/photo/upload' variant="contained" color="secondary">Add Photo</Button> : ""}
           {username? <Logout /> : ""}
+          {username? <Button component={Link} to='/user/delete_acct' variant="contained" color="secondary">Delete Account</Button> : ""}
       </Toolbar>
     </AppBar>
   );
