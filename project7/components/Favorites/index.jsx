@@ -50,7 +50,7 @@ function UserFavorites() {
       }
     );
   },[phId]);
-
+/*
   // favorite post
   function unfavoritePhoto(photo_id){
     console.log("New favorite status: " + false);
@@ -63,7 +63,7 @@ function UserFavorites() {
             console.log(failure);  
         }
     );
-  }
+  }*/
 
   // modal element
   const [open, setOpen] = useState(false);
@@ -97,7 +97,6 @@ function UserFavorites() {
                 {<Button onClick={(e) => {handleDelete(e, item.photo_id);}}> Remove Favorite</Button>}
               </CardActionArea>
             </Card>
-            <Button variant="contained" onClick={() => unfavoritePhoto(item.photo_id)}>⭐</Button>
           </div>
         );
       })}
