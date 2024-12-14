@@ -56,6 +56,7 @@ export function PhotoUnit({photo, user, setPhotos}){
   const [addCom, setAddCom] = useState("");
   const [phId, setPhId] = useState(""); 
   const [like, setLike] = useState(photo.userLiked);
+  const [favorite, setFavorite] = useState(photo.favorite);
   const [num, setNum] = useState(photo.likes);
   const [comId, setComId] = useState("");
   var didMount = useRef(false);
@@ -80,6 +81,20 @@ export function PhotoUnit({photo, user, setPhotos}){
         }
     );
   }
+
+  // favorite post
+  function favoritePhoto(){
+    setFavorite(true);
+    console.log("New favorite status: " + true);
+    axios.post("/favoritePhoto/"+photo._id, {status: true}).then(
+        (success) => {            
+            console.log("Favorite Photo requested");
+        },
+        (failure) => {
+            console.log(failure);  
+        }
+    );
+  }  
 
   const userInfo = useStateContext();
   const userId = userInfo.user_id;
@@ -182,6 +197,11 @@ function handleOnSubmit(event, photoId)
         {like? 
         <Button variant="contained" onClick={likePhoto}>👍</Button>:
         <Button variant="outlined" onClick={likePhoto}>👍</Button>}
+      </Grid>
+      <Grid item>
+        {favorite? 
+        <Button variant="contained">⭐</Button>:
+        <Button variant="outlined" onClick={favoritePhoto}>⭐</Button>}
       </Grid>
     </Grid>
     {photo.comments? photo.comments.map((elem) => < CommentUnit comment={elem} key={elem._id} setDelete={setDelete} setComId={setComId} setPhId={setPhId} pID = {photo._id} setPhotoFlag={setPhotoFlag}/>) : <br />}

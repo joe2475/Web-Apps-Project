@@ -52,6 +52,7 @@ const User = require("./schema/user.js");
 const Photo = require("./schema/photo.js");
 const SchemaInfo = require("./schema/schemaInfo.js");
 const UserLike = require("./schema/like.js");
+const UserFavorite = require("./schema/favorite.js");
 const { ObjectId } = require('mongodb');
 
 
@@ -143,6 +144,7 @@ const collections = [
   { name: "photo", collection: Photo },
   { name: "schemaInfo", collection: SchemaInfo },
   { name: "userlike", collection: UserLike},
+  { name: "userFavorite", collection: UserFavorite},
 ];
 
 try {
@@ -281,14 +283,17 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
         comments: [],
         likes: 0,
         userLiked: false,
+        favorite: false,
       };
 
       
-      // generate likes
+      // generate likes and favorites
       const templikes = await UserLike.find({photo_id: photo._id}).exec();
       const tempuserLiked = await UserLike.find({user_id: userId, photo_id: photo._id}).exec();
+      const tempuserFavorited = await UserFavorite.find({user_id: userId, photo_id: photo._id}).exec();
       photo.likes = templikes.length;
       photo.userLiked = tempuserLiked.length > 0;
+      photo.favorite = tempuserFavorited.length > 0;
       /*
       Promise.all([
         UserLike.find({photo_id: photo._id}).exec(),
@@ -775,6 +780,114 @@ app.post("/likePhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async func
   }
 }));
 
+// get_favorites
+app.get("/favorites", isLoggedIn, asyncHandler(async function (request, response) {
+
+  try{
+    // get userID
+    const userId = request.session.user.userID;
+
+    // get favorites
+    const userFavorite = await UserFavorite.find({user_id: userId}, "user_id, photo_id").exec();
+
+    // get photo names
+    const favorites = [];
+
+    console.log(favorites);
+
+    // loop for favorite photos
+    for(let i = 0; i < userFavorite.length; i++){
+      let userObject = {
+        photo_id: userFavorite[i].photo_id,
+        file_name: "",
+      }
+      console.log(userObject);
+      // get photo file name
+      const photo = await Photo.find({_id: userObject.photo_id}, "file_name").exec();
+      console.log(userObject);
+      userObject.file_name = photo[0].file_name;
+      console.log(userObject);
+      favorites[i] = userObject;
+    }
+
+    // return object
+    return response.json(favorites); // Use `json()` to send JSON responses
+  }
+  catch(err){
+    return response.status(400).json(err); // Send the error as JSON
+  }
+}));
+
+// submit_favorites
+app.post("/favoritePhoto/:photo_id", isLoggedIn, jsonParser, asyncHandler(async function (request, response) {
+  try{
+  const id = request.params.photo_id; 
+  const status = request.body.status; 
+
+  // get userID
+  const userId = request.session.user.userID;
+
+  // log output
+  console.log(status);
+  console.log(typeof status);
+  console.log(id);
+  console.log(userId);
+
+  // validate arguments
+  if(id === undefined || status === undefined || userId === undefined){
+    return response.status(400).send("Invalid arguments");
+  }
+
+  // attempt any tetrieval
+  const ooo = await UserFavorite.find({});
+  console.log("All:" + ooo);
+
+  // attempt retrieval
+  const favoriteObject = await UserFavorite.find({user_id: userId, photo_id: id},"user_id photo_id");
+  console.log(favoriteObject);
+  // if request to favorite
+  if (status === true){
+    // favorite request
+    console.log("request placed to favorite");
+    // if favorited and not present, favorite
+    if (favoriteObject.length === 0){
+
+      // insert object
+      const obj = {user_id: userId, photo_id: id};
+      const result = await UserFavorite.create(obj);
+      console.log("result:" + result);
+      return response.send("Succeeded Add Favorite");
+    }
+    else{
+      return response.status(400).send("Cannot favorite: favorite already present");
+    }
+  }
+
+  // status equals false (request to unfavorite)
+  else if (status === false){
+    // favorite request
+    console.log("request placed to unfavorite");
+    // if unfavorited and currently favorite, remove favorite
+    if (favoriteObject){
+      // remove favorite
+      const result = await UserFavorite.deleteOne({user_id: userId, photo_id: id});
+      console.log("result:" + result);
+      return response.send("Succeeded Remove Favorite");
+    }
+    else{
+      console.log("Cannot unfavorite: no comment to remove");
+      return response.status(400).send("Cannot unfavorite: favorite already absent");
+    }
+  }
+  // status is unreadable
+  else{return response.status(400).send("Invalid arguments");
+    
+  }
+}
+  catch(err){
+    return response.status(400).json(err); // Send the error as JSON
+  }
+}));
 app.delete("/deletePhoto/:id", jsonParser, asyncHandler(async function(request,response) {
 const id = request.params.id; 
 const commentId = request.body.comId;
