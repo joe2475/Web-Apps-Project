@@ -4,7 +4,8 @@ import {
   CardMedia,
   Grid,
   CardActionArea,
-  Button
+  Button, 
+  Modal
 } from "@mui/material";
 import "./styles.css";
 import axios from "axios";
@@ -79,7 +80,8 @@ function UserFavorites() {
   // displays a list of favorite cards from fetched data
   return (
   <div>
-      {model.map( (item, key) => {
+    {open ? <Modal open={open} onClose={(() => setOpen(false))}><img src={`../images/${file}`}></img></Modal> :
+      model.map( (item, key) => {
         return (
           <div key={key}>
             <Card sx={{ m: 2 }}>
