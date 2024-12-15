@@ -37,7 +37,7 @@ function UserFavorites() {
         setModel({});
       }
     );
-  },[username, delFavFlag, flagEffect]);
+  },[username, delFavFlag]);
 
   useEffect(()=>{
     const data = {phID: phId};
