@@ -30,6 +30,7 @@
  *                      Each photo should have all the Comments on the Photo
  *                      (JSON format).
  */
+/* eslint-disable no-await-in-loop */
 const multer  = require('multer');
 const processFormBody = multer({storage: multer.memoryStorage()}).single('uploadedphoto');
 
@@ -307,11 +308,11 @@ app.get("/photosOfUser/:id", isLoggedIn, asyncHandler(async function (request, r
 
       // generate comments
       for (let j = 0; j < info[i].comments.length; j++){
-        let userId = info[i].comments[j].user_id.toString();
+        let user_Id = info[i].comments[j].user_id.toString();
         let user;
         // find user
         for (let k = 0; k < users.length; k++){
-          if (userId === users[k]._id.toString()){
+          if (user_Id === users[k]._id.toString()){
             user = users[k];
             break;
           }

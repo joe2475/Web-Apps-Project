@@ -18,7 +18,7 @@ function UserFavorites() {
   const [model, setModel] = useState([]);
   const [delFavFlag, setDelFavFlag] = useState("");
   const [phId, setphId] = useState("");
-  const [flagEffect, setFlagEffect] = useState(false);
+ // const [flagEffect, setFlagEffect] = useState(false);
 
 
   function handleDelete(event, pId)

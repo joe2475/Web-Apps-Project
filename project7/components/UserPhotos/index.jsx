@@ -104,7 +104,7 @@ function UserPhotos({userId}) {
       ):
     (
     <>
-    {(typeof(photos) === undefined ?  
+    {(typeof(photos) === 'undefined' ?  
     (
       <div className="photoGroup">
         <Typography variant="h3">User has no photos.</Typography>
